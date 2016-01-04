@@ -47,7 +47,7 @@ public final class JMupenUtils {
 
     public static void addGame(File game) {
         JMupenUtils.clearOldRecents();
-        games.add(game.getName()+"|"+game.getAbsolutePath());
+        games.add(game.getName() + "|" + game.getAbsolutePath());
     }
 
     public static ArrayList<String> getGames() {
@@ -81,6 +81,17 @@ public final class JMupenUtils {
                 return "\\";
             default:
                 return "/";
+        }
+    }
+
+    public static String getOs() {
+        switch (System.getProperty("os.name")) {
+            case "win":
+                return "win";
+            case "mac":
+                return "mac";
+            default:
+                return "lin";
         }
     }
 

@@ -9,8 +9,6 @@ package jmupen;
  *
  * @author xela92
  */
-
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -22,7 +20,7 @@ public class GameSelectionListener extends JFrame implements ActionListener {
     private File workdir;
     private File file;
 
-    public GameSelectionListener (File workdir) {
+    public GameSelectionListener(File workdir) {
         this.workdir = workdir;
     }
 
@@ -53,9 +51,20 @@ public class GameSelectionListener extends JFrame implements ActionListener {
             file = chooser.getSelectedFile();
             JMupenGUI.getInstance().addRecentGame(file);
             JMupenUtils.writeGamesToFile();
-            Core c = new Core(file);
-            c.setFullscreen();
-            c.runGame();
+            
+            if (JMupenUtils.getOs().equals("win")) {
+                CoreWin c = new CoreWin(file);
+                c.setFullscreen();
+                c.runGame();
+            } else if (JMupenUtils.getOs().equals("mac")) {
+                Core c = new Core(file);
+                c.setFullscreen();
+                c.runGame();
+            } else {
+                Core c = new Core(file);
+                c.setFullscreen();
+                c.runGame();
+            }
 
         }
 
