@@ -28,12 +28,25 @@ public class MyListSelectionListener implements ListSelectionListener {
         int index = list.getSelectedIndex();
         if (e.getValueIsAdjusting() == false) {
             if (list.getSelectedIndex() != -1) {
-                System.out.println("INDEX: "+index+" Total:"+JMupenUtils.getGames().size());
-                System.out.println("Games: "+JMupenUtils.getGames().get(index));
+                System.out.println("INDEX: " + index + " Total:" + JMupenUtils.getGames().size());
+                System.out.println("Games: " + JMupenUtils.getGames().get(index));
                 gamePathToBeOpened = JMupenUtils.getGames().get(index).split("\\|")[1];
-                Core c = new Core(new File(gamePathToBeOpened));
-                c.setFullscreen();
-                c.runGame();
+                File file = new File(gamePathToBeOpened);
+                System.out.println("os: "+System.getProperty("os.name"));
+                if (JMupenUtils.getOs().equals("lin")) {
+                    //TODO create CoreLin
+                    CoreMac c = new CoreMac(file);
+                    c.setFullscreen();
+                    c.runGame();
+                } else if (JMupenUtils.getOs().equals("mac")) {
+                    CoreMac c = new CoreMac(file);
+                    c.setFullscreen();
+                    c.runGame();
+                } else {
+                   CoreWin c = new CoreWin(file);
+                    c.setFullscreen();
+                    c.runGame();
+                }
             }
         }
     }

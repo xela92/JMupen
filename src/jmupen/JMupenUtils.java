@@ -88,6 +88,8 @@ public final class JMupenUtils {
         switch (System.getProperty("os.name")) {
             case "win":
                 return "win";
+            case "Windows 10":
+                return "win";
             case "mac":
                 return "mac";
             default:

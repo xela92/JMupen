@@ -51,17 +51,17 @@ public class GameSelectionListener extends JFrame implements ActionListener {
             file = chooser.getSelectedFile();
             JMupenGUI.getInstance().addRecentGame(file);
             JMupenUtils.writeGamesToFile();
-            
-            if (JMupenUtils.getOs().equals("win")) {
-                CoreWin c = new CoreWin(file);
+            if (JMupenUtils.getOs().equals("lin")) {
+                //TODO create CoreLin
+                CoreMac c = new CoreMac(file);
                 c.setFullscreen();
                 c.runGame();
             } else if (JMupenUtils.getOs().equals("mac")) {
-                Core c = new Core(file);
+                CoreMac c = new CoreMac(file);
                 c.setFullscreen();
                 c.runGame();
             } else {
-                Core c = new Core(file);
+                CoreWin c = new CoreWin(file);
                 c.setFullscreen();
                 c.runGame();
             }
