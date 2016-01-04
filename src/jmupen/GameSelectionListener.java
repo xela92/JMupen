@@ -51,7 +51,8 @@ public class GameSelectionListener extends JFrame implements ActionListener {
         if (result == JFileChooser.APPROVE_OPTION) {
 
             file = chooser.getSelectedFile();
-            
+            JMupenGUI.getInstance().addRecentGame(file);
+            JMupenUtils.writeGamesToFile();
             Core c = new Core(file);
             c.setFullscreen();
             c.runGame();

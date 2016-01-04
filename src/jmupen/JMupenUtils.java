@@ -2,11 +2,14 @@ package jmupen;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -18,7 +21,8 @@ import java.util.stream.Stream;
 public final class JMupenUtils {
 
     private static final JMupenGUI gui = JMupenGUI.getInstance();
-    private static ArrayList<String> games;
+    private static ArrayList<String> games = new ArrayList<String>();
+    private static Path recentsFile = Paths.get(JMupenUtils.getHome() + JMupenUtils.getBar() + "jmupen.recents");
 
     public static ArrayList<String> getGamesFromFile(Path recents) {
         if (!Files.exists(recents)) {
@@ -42,11 +46,33 @@ public final class JMupenUtils {
     }
 
     public static void addGame(File game) {
-        games.add(game.getName());
+        JMupenUtils.clearOldRecents();
+        games.add(game.getName()+"|"+game.getAbsolutePath());
     }
 
     public static ArrayList<String> getGames() {
+        JMupenUtils.clearOldRecents();
         return games;
+    }
+
+    public static void clearOldRecents() {
+        if (games.toArray().length > 6) {
+            games.remove(0);
+        }
+    }
+
+    public static void setGames(ArrayList<String> g) {
+        JMupenUtils.clearOldRecents();
+        games = g;
+    }
+
+    public static void writeGamesToFile() {
+        List<String> listGames = (List) games;
+        try {
+            Files.write(recentsFile, listGames, Charset.forName("UTF-8"));
+        } catch (IOException ex) {
+            gui.showError("Error writing recents file", "Full message: " + ex.getLocalizedMessage());
+        }
     }
 
     public static String getBar() {

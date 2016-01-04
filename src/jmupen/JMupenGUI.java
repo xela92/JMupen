@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -31,17 +32,21 @@ public class JMupenGUI extends JFrame {
     private final JFrame win = this;
     private JPanel mainPnl;
     private JList gamelist;
-    private ArrayList<String> games;
     private ActionListener openFileAction;
     private static JMupenGUI instance;
+    private JScrollPane scroll;
+    private ArrayList<String> games;
 
     public JMupenGUI() {
         super.setTitle("JMupen N64");
         instance = JMupenGUI.this;
         initUI();
-        pack();
-        games = JMupenUtils.getGamesFromFile(Paths.get(JMupenUtils.getHome() + JMupenUtils.getBar()+ "jmupen.recents"));
+        games = JMupenUtils.getGamesFromFile(Paths.get(JMupenUtils.getHome() + JMupenUtils.getBar() + "jmupen.recents"));
+        JMupenUtils.setGames(games);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        initRecentGamesList();
+        pack();
+
     }
 
     public static JMupenGUI getInstance() {
@@ -60,7 +65,7 @@ public class JMupenGUI extends JFrame {
         this.setLocation(dimension.width / 3, dimension.height / 3);
         mainPnl = new JPanel();
         mainPnl.setBorder(new TitledBorder("JMupen Selector"));
-        mainPnl.setPreferredSize(new Dimension(500, 300));
+        mainPnl.setPreferredSize(new Dimension(300, 200));
         mainPnl.setMinimumSize(new Dimension(120, 150));
 
         JButton btn = new JButton("Seleziona gioco");
@@ -68,22 +73,46 @@ public class JMupenGUI extends JFrame {
 
         btn.addActionListener(openFileAction);
         mainPnl.add(btn);
+
         //AGGIUNGO TUTTO
         cont.add(mainPnl);
         this.setVisible(true);
     }
 
-    public void addRecentGame(File game) {
-        games.add(game.getName());
-        gamelist = new JList(games.toArray());
+    public void initRecentGamesList() {
+        ArrayList<String> list = new ArrayList<String>();
+        for (String game : games) {
+            list.add(game.split("\\|")[0]);
+        }
+        gamelist = new JList(list.toArray());
+        gamelist.addListSelectionListener(new MyListSelectionListener(gamelist));
         gamelist.setVisible(true);
-        this.setMinimumSize(new Dimension(800, 600));
+        mainPnl.add(gamelist);
+        if (scroll == null) {
+            scroll = new JScrollPane(gamelist,
+                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            scroll.setVisible(true);
+            this.add(scroll);
+            this.setMinimumSize(new Dimension(200, 200));
+        }
 
-        JScrollPane scroll = new JScrollPane(gamelist,
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scroll.setVisible(true);
-        this.add(scroll);
-        this.setMinimumSize(new Dimension(200, 200));
+    }
+
+    public void addRecentGame(File game) {
+        games.add(game.getName() + "|" + game.getAbsolutePath());
+        JMupenUtils.setGames(games);
+        ArrayList<String> list = new ArrayList<String>();
+        for (String sgame : games) {
+            list.add(sgame.split("\\|")[0]);
+        }
+        gamelist.setListData(list.toArray());
+        if (scroll == null) {
+            scroll = new JScrollPane(gamelist,
+                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            scroll.setVisible(true);
+            this.add(scroll);
+            this.setMinimumSize(new Dimension(200, 200));
+        }
     }
 
     public void showError(String mainMsg, String fullMess) {
