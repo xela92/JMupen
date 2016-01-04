@@ -36,9 +36,10 @@ public class JMupenGUI extends JFrame {
     private static JMupenGUI instance;
     private JScrollPane scroll;
     private ArrayList<String> games;
+    private final static String version = "1.0";
 
     public JMupenGUI() {
-        super.setTitle("JMupen N64");
+        super.setTitle("JMupen N64 "+version);
         instance = JMupenGUI.this;
         initUI();
         games = JMupenUtils.getGamesFromFile(Paths.get(JMupenUtils.getHome() + JMupenUtils.getBar() + "jmupen.recents"));
@@ -85,6 +86,7 @@ public class JMupenGUI extends JFrame {
             list.add(game.split("\\|")[0]);
         }
         gamelist = new JList(list.toArray());
+        gamelist.setBorder(new TitledBorder("Recent Games"));
         gamelist.addListSelectionListener(new MyListSelectionListener(gamelist));
         gamelist.setVisible(true);
         mainPnl.add(gamelist);

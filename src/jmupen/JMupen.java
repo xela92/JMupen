@@ -17,7 +17,6 @@ public class JMupen {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        System.out.println(System.getProperty("user.dir"));
         new JMupenGUI();
     }
     
