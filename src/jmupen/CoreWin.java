@@ -59,9 +59,13 @@ public class CoreWin {
 
             Process process = run.exec(new String[]{corepath + "\\mupen64plus-ui-console.exe", fullscreen, f.getAbsolutePath()}, null, new File(corepath));
             //System.out.println("Cmd: "+Arrays.toString(new String[]{corepath + "\\mupen64plus-ui-console.exe", fullscreen, f.getAbsolutePath()}, null, new File(corepath));
-            Scanner scanner = new Scanner(process.getErrorStream());
+            Scanner scanner = new Scanner(process.getInputStream());
             while (scanner.hasNext()) {
                 System.out.println(scanner.nextLine());
+            }
+            Scanner errScanner = new Scanner(process.getErrorStream());
+            while (errScanner.hasNext()) {
+                System.out.println(errScanner.nextLine());
             }
         } catch (IOException ex) {
             JMupenGUI.getInstance().showError("Error opening game", ex.getLocalizedMessage());
