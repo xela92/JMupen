@@ -85,15 +85,15 @@ public final class JMupenUtils {
     }
 
     public static String getOs() {
-        switch (System.getProperty("os.name")) {
-            case "win":
-                return "win";
-            case "Windows 10":
-                return "win";
-            case "mac":
-                return "mac";
-            default:
-                return "lin";
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+
+            return "win";
+        } else if (os.contains("mac")) {
+            return "mac";
+        } else {
+
+            return "lin";
         }
     }
 
