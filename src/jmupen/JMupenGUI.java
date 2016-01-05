@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -36,7 +35,7 @@ public class JMupenGUI extends JFrame {
     private static JMupenGUI instance;
     private JScrollPane scroll;
     private ArrayList<String> games;
-    private final static String version = "1.5";
+    private final static String version = "1.6";
 
     public JMupenGUI() {
         super.setTitle("JMupen N64 "+version);
@@ -69,7 +68,7 @@ public class JMupenGUI extends JFrame {
         mainPnl.setPreferredSize(new Dimension(300, 200));
         mainPnl.setMinimumSize(new Dimension(120, 150));
 
-        JButton btn = new JButton("Seleziona gioco");
+        JButton btn = new JButton("Select Game");
         btn.setMinimumSize(new Dimension(200, 200));
 
         btn.addActionListener(openFileAction);
