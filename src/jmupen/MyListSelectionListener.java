@@ -36,15 +36,12 @@ public class MyListSelectionListener implements ListSelectionListener {
                 if (JMupenUtils.getOs().equals("lin")) {
                     //TODO create CoreLin
                     CoreMac c = new CoreMac(file);
-                    c.setFullscreen();
                     c.runGame();
                 } else if (JMupenUtils.getOs().equals("mac")) {
                     CoreMac c = new CoreMac(file);
-                    c.setFullscreen();
                     c.runGame();
                 } else {
                    CoreWin c = new CoreWin(file);
-                    c.setFullscreen();
                     c.runGame();
                 }
             }

@@ -21,6 +21,8 @@ public final class JMupenUtils {
     private static final JMupenGUI gui = JMupenGUI.getInstance();
     private static ArrayList<String> games = new ArrayList<String>();
     private static Path recentsFile = Paths.get(JMupenUtils.getHome() + JMupenUtils.getBar() + "jmupen.recents");
+    private static boolean fullscreen = true;
+    private static boolean using_legacy = false;
 
     public static ArrayList<String> getGamesFromFile(Path recents) {
         if (!Files.exists(recents)) {
@@ -41,6 +43,19 @@ public final class JMupenUtils {
         } else {
             return null;
         }
+    }
+
+    public static void setFullscreen(boolean ans) {
+        fullscreen = ans;
+    }
+    public static boolean getUsingLegacyVersion() {
+        return using_legacy;
+    }
+    public static void setUsingLegacyVersion(boolean ans) {
+        using_legacy = ans;
+    }
+    public static boolean getFullscreen() {
+        return fullscreen;
     }
 
     public static void addGame(File game) {

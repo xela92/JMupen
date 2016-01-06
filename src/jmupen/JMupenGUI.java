@@ -8,6 +8,7 @@ package jmupen;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.Paths;
@@ -35,7 +36,7 @@ public class JMupenGUI extends JFrame {
     private static JMupenGUI instance;
     private JScrollPane scroll;
     private ArrayList<String> games;
-    private final static String version = "1.6";
+    private final static String version = "1.7";
 
     public JMupenGUI() {
         super.setTitle("JMupen N64 "+version);
@@ -73,6 +74,17 @@ public class JMupenGUI extends JFrame {
 
         btn.addActionListener(openFileAction);
         mainPnl.add(btn);
+        
+        JButton opt = new JButton("Options");
+        opt.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JMupenOptions.getInstance();
+            }
+        });
+        
+        mainPnl.add(opt);
 
         //AGGIUNGO TUTTO
         cont.add(mainPnl);

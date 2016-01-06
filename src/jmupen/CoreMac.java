@@ -28,16 +28,29 @@ import java.util.logging.Logger;
 public class CoreMac {
 
     private final Runtime run = getRuntime();
-    private String engine = "glide64";
-    private String fullscreen = "";
-    private String corepath = "/tmp/jmupen/bin/mac/core";
-    private String corelibpath = "/tmp/jmupen/bin/mac/core/libmupen64plus.dylib";
-    private String pluginpath = corepath;
-    private String respath = "/tmp/jmupen/bin/mac/res";
-    private File f;
+    private String engine = "glide64mk2";
+    private String fullscreen = JMupenUtils.getFullscreen() == true ? "--fullscreen" : "";
+    private String bin = "bin";
     private Path tmpFolder = Paths.get("/tmp/jmupen");
+    private String corepath;
+    //= "/tmp/jmupen/bin/mac/core/libmupen64plus.dylib";
+    private String corelibpath;
+    private String pluginpath;
+    private String respath;
+    private File f;
 
     public CoreMac(File f) {
+        if (JMupenUtils.getUsingLegacyVersion()) {
+            bin = "bin_legacy";
+            engine = "glide64";
+        } else {
+            bin = "bin";
+        }
+        String tmpFolderPath = tmpFolder.toFile().getAbsolutePath();
+        corepath = tmpFolderPath.concat("/").concat(bin).concat("/mac/core");
+        corelibpath = tmpFolderPath.concat("/").concat(bin).concat("/mac/core/libmupen64plus.dylib");
+        pluginpath = corepath;
+        respath = tmpFolderPath.concat("/").concat(bin).concat("/mac/res");
         this.f = f;
     }
 
@@ -54,9 +67,9 @@ public class CoreMac {
                 extractJar(jarfile, target);
                 new File(corepath.concat("/mupen64plus")).setExecutable(true);
             } else {
-                System.out.println("URI: " + getClass().getClassLoader().getResource("bin").toString());
+                System.out.println("URI: " + getClass().getClassLoader().getResource(bin).toString());
                 Files.createDirectory(tmpFolder);
-                copyProgramToTmp(new File(getClass().getClassLoader().getResource("bin").toURI()), new File("/tmp/jmupen/bin"));
+                copyProgramToTmp(new File(getClass().getClassLoader().getResource(bin).toURI()), new File("/tmp/jmupen/"+bin));
             }
             Process process = run.exec(new String[]{corepath + "/mupen64plus", fullscreen, "--corelib", corelibpath, "--plugindir", pluginpath, "--gfx", "mupen64plus-video-" + engine, "--datadir", respath, f.getAbsolutePath()});
             Scanner scanner = new Scanner(process.getErrorStream());
@@ -69,18 +82,13 @@ public class CoreMac {
             Logger.getLogger(CoreMac.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    /*  private String getCommand(File f) {
-     //String command = "mupen64plus " + fullscreen + " --corelib  --plugindir ./src/bin/mac/core --gfx mupen64plus-video-" + engine + " --datadir ";
-     //return command + " "+ f.getAbsolutePath().replace(" ", "\\ ");
-     // + " \""  + "\"";
-     }*/
 
     public void extractJar(File jarFile, File destDir) {
         try {
             System.out.println("Extracting JAR...");
             JarUnpacker jarUnpacker = new JarUnpacker();
             jarUnpacker.unpack(jarFile.getAbsolutePath(), destDir.getAbsolutePath());
-            
+
         } catch (Exception e) {
             JMupenGUI.getInstance().showError("Error extracting jar", e.getLocalizedMessage());
         }
@@ -121,6 +129,7 @@ public class CoreMac {
         fullscreen = "--fullscreen";
     }
 
+    //ATTENZIONE, meglio non utilizzarlo in quanto gli engine potrebbero cambiare a seconda della versione di mupen.
     public void setGFX(String value) {
         switch (value) {
             case "arach":

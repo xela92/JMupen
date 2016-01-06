@@ -28,15 +28,22 @@ public class CoreWin {
 
     private final Runtime run = getRuntime();
     //private String engine = "glide64";
-    private String fullscreen = "";
+    private String fullscreen = JMupenUtils.getFullscreen() == true ? "--fullscreen" : "";
     private File f;
+    private String bin = "bin";
     private Path tmpFolder = Paths.get(System.getProperty("java.io.tmpdir") + "\\jmupen");
-    private String corepath = tmpFolder.toFile().getAbsolutePath().concat("\\bin\\win");
+    private String corepath;
 
 
 
     public CoreWin(File f) {
         this.f = f;
+        if (JMupenUtils.getUsingLegacyVersion()) {
+            bin = "bin_legacy";
+        } else {
+            bin = "bin";
+        }
+        corepath = tmpFolder.toFile().getAbsolutePath().concat("\\").concat(bin).concat("\\");
     }
 
     public void runGame() {
