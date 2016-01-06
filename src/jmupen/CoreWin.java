@@ -34,8 +34,6 @@ public class CoreWin {
     private Path tmpFolder = Paths.get(System.getProperty("java.io.tmpdir") + "\\jmupen");
     private String corepath;
 
-
-
     public CoreWin(File f) {
         this.f = f;
         if (JMupenUtils.getUsingLegacyVersion()) {
@@ -43,7 +41,7 @@ public class CoreWin {
         } else {
             bin = "bin";
         }
-        corepath = tmpFolder.toFile().getAbsolutePath().concat("\\").concat(bin).concat("\\");
+        corepath = tmpFolder.toFile().getAbsolutePath().concat("\\").concat(bin).concat("\\").concat("win");
     }
 
     public void runGame() {
@@ -75,12 +73,13 @@ public class CoreWin {
                 System.out.println(errScanner.nextLine());
             }
         } catch (IOException ex) {
-            JMupenGUI.getInstance().showError("Error opening game", ex.getLocalizedMessage());
+            JMupenGUI.getInstance().showError("Error opening game or extracting temporary resources. ", ex.getLocalizedMessage());
         } catch (URISyntaxException ex) {
-            JMupenGUI.getInstance().showError("Error opening game", ex.getLocalizedMessage());
+            JMupenGUI.getInstance().showError("Error opening game ", ex.getLocalizedMessage());
         }
     }
- public void copyProgramToTmp(File sourceLocation, File targetLocation)
+
+    public void copyProgramToTmp(File sourceLocation, File targetLocation)
             throws IOException {
 
         if (sourceLocation.isDirectory()) {
@@ -109,7 +108,8 @@ public class CoreWin {
         }
         //System.out.println("target: " + targetLocation.getAbsolutePath().concat("\\win\\mupen64plus"));
         //new File(targetLocation.getAbsolutePath().concat("/mac/core/mupen64plus")).setExecutable(true);
- }
+    }
+
     public void setFullscreen() {
         fullscreen = "--fullscreen";
     }
