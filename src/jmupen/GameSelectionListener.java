@@ -36,12 +36,14 @@ public class GameSelectionListener extends JFrame implements ActionListener {
                 if (f.getAbsoluteFile().toString() == null) {
                     return false;
                 }
-                return f.getAbsoluteFile().toString().endsWith("v64") || f.getAbsoluteFile().toString().endsWith("n64") || f.isDirectory();
+                return f.getAbsoluteFile().toString().toLowerCase().endsWith("v64") || f.getAbsoluteFile().toString().toLowerCase().endsWith("n64") || f.getAbsoluteFile().toString().toLowerCase().endsWith("z64") 
+                        || f.getAbsoluteFile().toString().toLowerCase().endsWith("v64") || f.getAbsoluteFile().toString().toLowerCase().endsWith("u64") 
+                        || f.getAbsoluteFile().toString().toLowerCase().endsWith("rom") || f.getAbsoluteFile().toString().toLowerCase().endsWith("pal") || f.getAbsoluteFile().toString().toLowerCase().endsWith("bin") ||f.isDirectory();
             }
 
             @Override
             public String getDescription() {
-                return "Nintendo 64 Game File (.n64 or .v64)";
+                return "Nintendo 64 Game File (.*64, .rom, .pal, .bin)";
             }
         });
         chooser.setCurrentDirectory(workdir);

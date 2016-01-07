@@ -5,28 +5,37 @@
  */
 package jmupen;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import javax.swing.DefaultListModel;
 import javax.swing.JList;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.ListModel;
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author xela92
  */
-public class MyListSelectionListener implements ListSelectionListener {
+public class MyListSelectionListener extends MouseAdapter {
 
     private JList list;
     private String gamePathToBeOpened;
+    private final DefaultListModel model;
 
-    public MyListSelectionListener(JList list) {
+    public MyListSelectionListener(JList list, DefaultListModel model) {
         this.list = list;
+        this.model = model;
     }
 
     @Override
-    public void valueChanged(ListSelectionEvent e) {
-        int index = list.getSelectedIndex();
-        if (e.getValueIsAdjusting() == false) {
+    public void mouseClicked(MouseEvent e) {
+        int index = list.locationToIndex(e.getPoint());
+        if (e.getClickCount() == 2 ) {
             if (list.getSelectedIndex() != -1) {
                 System.out.println("INDEX: " + index + " Total:" + JMupenUtils.getGames().size());
                 System.out.println("Games: " + JMupenUtils.getGames().get(index));
@@ -47,6 +56,23 @@ public class MyListSelectionListener implements ListSelectionListener {
             }
         }
     }
+    
+      @Override
+        public void mousePressed(MouseEvent e) {
+            if (SwingUtilities.isRightMouseButton(e)) {
+                JPopupMenu menu = new JPopupMenu();
+                JMenuItem item = new JMenuItem("Remove");
+                item.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        model.removeElementAt(list.getSelectedIndex());
+                    }
+                });
+                menu.add(item);
+                list.setSelectedIndex(list.locationToIndex(e.getPoint()));
+                menu.show(list, e.getX(), e.getY());
+            }
+        }
 
     public String getGamePathToBeOpened() {
         return gamePathToBeOpened;
