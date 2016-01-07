@@ -30,7 +30,6 @@ import javax.swing.border.TitledBorder;
  */
 public class JMupenGUI extends JFrame {
 
-    private final JFrame win = this;
     private JPanel mainPnl;
     private JList gamelist;
     private DefaultListModel<String> model;
@@ -120,7 +119,7 @@ public class JMupenGUI extends JFrame {
         }
 
     }
-    
+
     public DefaultListModel getModel() {
         return model;
     }
