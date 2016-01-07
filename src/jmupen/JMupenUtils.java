@@ -1,7 +1,11 @@
 package jmupen;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -10,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Stream;
 
 /**
@@ -19,8 +24,9 @@ import java.util.stream.Stream;
 public final class JMupenUtils {
 
     private static final JMupenGUI gui = JMupenGUI.getInstance();
+    private static Properties props = new Properties();
     private static ArrayList<String> games = new ArrayList<String>();
-    private static Path recentsFile = Paths.get(JMupenUtils.getHome() + JMupenUtils.getBar() + "jmupen.recents");
+    private static final Path recentsFile = Paths.get(JMupenUtils.getConfigDir() + JMupenUtils.getBar() + "jmupen.recents");
     private static boolean fullscreen = true;
     private static boolean using_legacy = false;
 
@@ -45,17 +51,40 @@ public final class JMupenUtils {
         }
     }
 
+    public static Path getRecents() {
+        return recentsFile;
+    }
+
+    public static void addRecentGame(File game) {
+        games = JMupenUtils.getGamesFromFile(Paths.get(JMupenUtils.getHome() + JMupenUtils.getBar() + "jmupen.recents"));
+        games.add(game.getName() + "|" + game.getAbsolutePath());
+        JMupenUtils.setGames(games);
+        JMupenGUI.getInstance().getModel().addElement(game.getName());
+
+    }
+
     public static void setFullscreen(boolean ans) {
         fullscreen = ans;
     }
+
     public static boolean getUsingLegacyVersion() {
         return using_legacy;
     }
+
     public static void setUsingLegacyVersion(boolean ans) {
         using_legacy = ans;
     }
+
     public static boolean getFullscreen() {
         return fullscreen;
+    }
+
+    public static String getConfigDir() {
+        if (JMupenUtils.getOs().equals("mac") || JMupenUtils.getOs().equals("lin")) {
+            return JMupenUtils.getHome();
+        } else {
+            return System.getProperty("java.io.tmpdir");
+        }
     }
 
     public static void addGame(File game) {
@@ -112,6 +141,45 @@ public final class JMupenUtils {
 
     public static String getHome() {
         return System.getProperty("user.home");
+
+    }
+
+    public static void saveParamChanges() {
+        try {
+            props.setProperty("Fullscreen", "" + JMupenUtils.getFullscreen());
+            props.setProperty("UsingLegacy", ""+ JMupenUtils.getUsingLegacyVersion());
+            OutputStream out = new FileOutputStream(JMupenUtils.getConf());
+            props.store(out, "JMupen Configuration File");
+        } catch (Exception e) {
+            JMupenGUI.getInstance().showError("Error saving conf file.", e.getLocalizedMessage());
+        }
+    }
+
+    public static File getConf() {
+        return new File(JMupenUtils.getConfigDir() + JMupenUtils.getBar() + "jmupen.conf");
+
+    }
+
+    public static void loadParams() {
+        InputStream is = null;
+        if (JMupenUtils.getConf().exists()) {
+            // First try loading from the current directory
+            try {
+                is = new FileInputStream(JMupenUtils.getConf());
+            } catch (Exception e) {
+                is = null;
+            }
+
+            try {
+                props.load(is);
+                JMupenUtils.setFullscreen(props.get("Fullscreen").equals("true"));
+                JMupenUtils.setUsingLegacyVersion(props.get("UsingLegacy").equals("true"));
+            } catch (Exception e) {
+                saveParamChanges();
+            }
+        } else {
+            saveParamChanges();
+        }
 
     }
 

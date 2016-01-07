@@ -17,7 +17,7 @@ import javax.swing.JFrame;
 
 public class GameSelectionListener extends JFrame implements ActionListener {
 
-    private File workdir;
+    private final File workdir;
     private File file;
 
     public GameSelectionListener(File workdir) {
@@ -51,7 +51,7 @@ public class GameSelectionListener extends JFrame implements ActionListener {
         if (result == JFileChooser.APPROVE_OPTION) {
 
             file = chooser.getSelectedFile();
-            JMupenGUI.getInstance().addRecentGame(file);
+            JMupenUtils.addRecentGame(file);
             JMupenUtils.writeGamesToFile();
             if (JMupenUtils.getOs().equals("lin")) {
                 //TODO create CoreLin

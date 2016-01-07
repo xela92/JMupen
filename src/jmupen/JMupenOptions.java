@@ -11,15 +11,16 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Properties;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -28,10 +29,8 @@ import javax.swing.border.TitledBorder;
  */
 public class JMupenOptions extends JFrame {
 
-    private final JFrame win = this;
     private JPanel mainPnl;
     private static JMupenOptions instance;
-    private JScrollPane scroll;
 
     public JMupenOptions() {
         super.setTitle("JMupen N64 Options");
@@ -80,7 +79,6 @@ public class JMupenOptions extends JFrame {
                 } else {
                     JMupenUtils.setFullscreen(true);
                     System.out.println("Saving: fullscreen");
-
                 }
 
                 if (lv.isSelected()) {
@@ -90,6 +88,7 @@ public class JMupenOptions extends JFrame {
                     JMupenUtils.setUsingLegacyVersion(false);
                     System.out.println("Saving: not legacy version");
                 }
+                JMupenUtils.saveParamChanges();
                 dispose();
             }
         });
@@ -99,6 +98,8 @@ public class JMupenOptions extends JFrame {
         cont.add(mainPnl);
         this.setVisible(true);
     }
+
+    
 
     @Override
     public void dispose() {

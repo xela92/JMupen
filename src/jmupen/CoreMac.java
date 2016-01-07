@@ -29,7 +29,7 @@ public class CoreMac {
 
     private final Runtime run = getRuntime();
     private String engine = "glide64mk2";
-    private String fullscreen = JMupenUtils.getFullscreen() == true ? "--fullscreen" : "";
+    private String fullscreen = JMupenUtils.getFullscreen() == true ? "--fullscreen" : "--windowed";
     private String bin = "bin";
     private Path tmpFolder = Paths.get("/tmp/jmupen");
     private String corepath;

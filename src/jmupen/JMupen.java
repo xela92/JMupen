@@ -5,8 +5,6 @@
  */
 package jmupen;
 
-import java.io.IOException;
-
 /**
  *
  * @author xela92
@@ -16,8 +14,8 @@ public class JMupen {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new JMupenGUI();
     }
-    
+
 }

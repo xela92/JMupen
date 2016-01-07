@@ -10,8 +10,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -21,12 +19,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -38,20 +33,22 @@ public class JMupenGUI extends JFrame {
     private final JFrame win = this;
     private JPanel mainPnl;
     private JList gamelist;
+    private DefaultListModel<String> model;
     private ActionListener openFileAction;
     private static JMupenGUI instance;
     private JScrollPane scroll;
     private ArrayList<String> games;
-    private final static String version = "1.7.5";
+    private final static String version = "1.8.0";
 
     public JMupenGUI() {
-        super.setTitle("JMupen N64 "+version);
+        super.setTitle("JMupen N64 " + version);
         instance = JMupenGUI.this;
         initUI();
         games = JMupenUtils.getGamesFromFile(Paths.get(JMupenUtils.getHome() + JMupenUtils.getBar() + "jmupen.recents"));
         JMupenUtils.setGames(games);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         initRecentGamesList();
+        JMupenUtils.loadParams();
         pack();
 
     }
@@ -80,7 +77,7 @@ public class JMupenGUI extends JFrame {
 
         btn.addActionListener(openFileAction);
         mainPnl.add(btn);
-        
+
         JButton opt = new JButton("Options");
         opt.addActionListener(new ActionListener() {
 
@@ -89,7 +86,7 @@ public class JMupenGUI extends JFrame {
                 JMupenOptions.getInstance();
             }
         });
-        
+
         mainPnl.add(opt);
 
         //AGGIUNGO TUTTO
@@ -102,18 +99,18 @@ public class JMupenGUI extends JFrame {
         for (String game : games) {
             list.add(game.split("\\|")[0]);
         }
-        DefaultListModel<String> model = new DefaultListModel();
+        model = new DefaultListModel();
         gamelist = new JList(model);
         for (Object o : list.toArray()) {
-            model.addElement((String)o);
+            model.addElement((String) o);
         }
-             
+
         //gamelist.setModel(new DefaultListModel<String>());
         gamelist.setBorder(new TitledBorder("Recent Games"));
-        gamelist.addMouseListener(new MyListSelectionListener(gamelist, model) );
+        gamelist.addMouseListener(new MyListSelectionListener(gamelist, model));
         gamelist.setVisible(true);
         mainPnl.add(gamelist);
-       
+
         if (scroll == null) {
             scroll = new JScrollPane(gamelist,
                     JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -121,27 +118,11 @@ public class JMupenGUI extends JFrame {
             this.add(scroll);
             this.setMinimumSize(new Dimension(200, 200));
         }
-
 
     }
     
-    
-
-    public void addRecentGame(File game) {
-        games.add(game.getName() + "|" + game.getAbsolutePath());
-        JMupenUtils.setGames(games);
-        ArrayList<String> list = new ArrayList<String>();
-        for (String sgame : games) {
-            list.add(sgame.split("\\|")[0]);
-        }
-        gamelist.setListData(list.toArray());
-        if (scroll == null) {
-            scroll = new JScrollPane(gamelist,
-                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-            scroll.setVisible(true);
-            this.add(scroll);
-            this.setMinimumSize(new Dimension(200, 200));
-        }
+    public DefaultListModel getModel() {
+        return model;
     }
 
     public void showError(String mainMsg, String fullMess) {

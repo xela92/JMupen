@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
-        <file>
-            <url>src/jmupen/JMupenGUI.java</url>
-            <bookmark id="1">
-                <name/>
-                <line>103</line>
-                <key/>
-            </bookmark>
-        </file>
-    </editor-bookmarks>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/Users/xela92/My%20Sw/JMupen/src/jmupen/JMupenUtils.java</file>
             <file>file:/Users/xela92/My%20Sw/JMupen/src/jmupen/CoreWin.java</file>
+            <file>file:/Users/xela92/My%20Sw/JMupen/src/jmupen/JMupenOptions.java</file>
             <file>file:/Users/xela92/My%20Sw/JMupen/src/jmupen/GameSelectionListener.java</file>
             <file>file:/Users/xela92/My%20Sw/JMupen/src/jmupen/JMupen.java</file>
             <file>file:/Users/xela92/My%20Sw/JMupen/src/jmupen/JMupenGUI.java</file>
-            <file>file:/Users/xela92/My%20Sw/JMupen/src/jmupen/Core.java</file>
             <file>file:/Users/xela92/My%20Sw/JMupen/src/jmupen/MyListSelectionListener.java</file>
+            <file>file:/Users/xela92/My%20Sw/JMupen/src/jmupen/CoreMac.java</file>
         </group>
     </open-files>
 </project-private>

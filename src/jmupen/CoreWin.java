@@ -28,7 +28,7 @@ public class CoreWin {
 
     private final Runtime run = getRuntime();
     //private String engine = "glide64";
-    private String fullscreen = JMupenUtils.getFullscreen() == true ? "--fullscreen" : "";
+    private String fullscreen = JMupenUtils.getFullscreen() == true ? "--fullscreen" : "--windowed";
     private File f;
     private String bin = "bin";
     private Path tmpFolder = Paths.get(System.getProperty("java.io.tmpdir") + "\\jmupen");
