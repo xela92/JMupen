@@ -37,7 +37,7 @@ public class JMupenGUI extends JFrame {
     private ActionListener openFileAction;
     private static JMupenGUI instance;
     private JScrollPane scroll;
-    private ArrayList<String> games;
+    private final ArrayList<String> games;
     private final static String version = "1.8.0";
 
     public JMupenGUI() {

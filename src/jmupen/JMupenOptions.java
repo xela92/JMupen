@@ -10,18 +10,15 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Properties;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
+import net.miginfocom.swing.MigLayout;
 
 /**
  *
@@ -54,7 +51,8 @@ public class JMupenOptions extends JFrame {
         cont.setLayout(new BoxLayout(cont, BoxLayout.PAGE_AXIS));
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dimension.width / 3, dimension.height / 2);
-        mainPnl = new JPanel();
+        MigLayout layout = new MigLayout();
+        mainPnl = new JPanel(layout);
         mainPnl.setBorder(new TitledBorder("JMupen Options"));
         mainPnl.setPreferredSize(new Dimension(300, 200));
         mainPnl.setMinimumSize(new Dimension(120, 150));
@@ -65,7 +63,11 @@ public class JMupenOptions extends JFrame {
         JCheckBox lv = new JCheckBox("Use legacy version");
         lv.setToolTipText("Use this if you have problems running games");
         lv.setSelected(JMupenUtils.getUsingLegacyVersion());
-        mainPnl.add(lv);
+        mainPnl.add(lv, "span, grow");
+        JLabel lab = new JLabel("Save files directory");
+        mainPnl.add(lab, "gaptop 30px");
+        JButton savedir  = new JButton("Browse...");
+        mainPnl.add(savedir, "gaptop 30px");
         JButton btn = new JButton("Save");
         btn.setMinimumSize(new Dimension(200, 200));
 
@@ -92,14 +94,12 @@ public class JMupenOptions extends JFrame {
                 dispose();
             }
         });
-        mainPnl.add(btn);
 
         //AGGIUNGO TUTTO
         cont.add(mainPnl);
+        cont.add(btn);
         this.setVisible(true);
     }
-
-    
 
     @Override
     public void dispose() {
