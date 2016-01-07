@@ -60,6 +60,7 @@ public final class JMupenUtils {
         games.add(game.getName() + "|" + game.getAbsolutePath());
         JMupenUtils.setGames(games);
         JMupenGUI.getInstance().getModel().addElement(game.getName());
+        JMupenUtils.clearOldRecents();
 
     }
 
@@ -100,6 +101,7 @@ public final class JMupenUtils {
     public static void clearOldRecents() {
         if (games.toArray().length > 6) {
             games.remove(0);
+            JMupenGUI.getInstance().getModel().removeElementAt(0);
         }
     }
 
@@ -147,7 +149,7 @@ public final class JMupenUtils {
     public static void saveParamChanges() {
         try {
             props.setProperty("Fullscreen", "" + JMupenUtils.getFullscreen());
-            props.setProperty("UsingLegacy", ""+ JMupenUtils.getUsingLegacyVersion());
+            props.setProperty("UsingLegacy", "" + JMupenUtils.getUsingLegacyVersion());
             OutputStream out = new FileOutputStream(JMupenUtils.getConf());
             props.store(out, "JMupen Configuration File");
         } catch (Exception e) {
