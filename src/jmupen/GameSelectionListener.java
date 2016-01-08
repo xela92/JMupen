@@ -55,8 +55,7 @@ public class GameSelectionListener extends JFrame implements ActionListener {
             JMupenUtils.writeGamesToFile();
             JMupenGUI.getInstance().showProgress();
             if (JMupenUtils.getOs().equals("lin")) {
-                //TODO create CoreLin
-                CoreMac c = new CoreMac(file);
+                CoreLin c = new CoreLin(file);
                 Thread t = new Thread(c);
                 t.start();
             } else if (JMupenUtils.getOs().equals("mac")) {

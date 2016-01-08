@@ -48,8 +48,7 @@ public class MyListSelectionListener extends MouseAdapter {
                 System.out.println("os: " + System.getProperty("os.name"));
                 JMupenGUI.getInstance().showProgress();
                 if (JMupenUtils.getOs().equals("lin")) {
-                    //TODO create CoreLin
-                    CoreMac c = new CoreMac(file);
+                    CoreLin c = new CoreLin(file);
                     Thread t = new Thread(c);
                     t.start();
                 } else if (JMupenUtils.getOs().equals("mac")) {
@@ -60,7 +59,7 @@ public class MyListSelectionListener extends MouseAdapter {
                     CoreWin c = new CoreWin(file);
                     Thread t = new Thread(c);
                     t.start();
-                }                
+                }
             }
         }
     }

@@ -33,7 +33,6 @@ public class CoreMac implements Runnable{
     private String bin = "bin";
     private Path tmpFolder = Paths.get("/tmp/jmupen");
     private String corepath;
-    //= "/tmp/jmupen/bin/mac/core/libmupen64plus.dylib";
     private String corelibpath;
     private String pluginpath;
     private String respath;
