@@ -56,7 +56,7 @@ public class CoreLin implements Runnable {
         }
         String tmpFolderPath = tmpFolder.toFile().getAbsolutePath();
         corepath = tmpFolderPath.concat("/").concat(bin).concat("/lin/core");
-        corelibpath = tmpFolderPath.concat("/").concat(bin).concat("/lin/core/libmupen64plus.so.2");
+        corelibpath = tmpFolderPath.concat("/").concat(bin).concat("/lin/core/libmupen64plus.so.2.0.0");
         pluginpath = corepath;
         respath = tmpFolderPath.concat("/").concat(bin).concat("/lin/res");
         this.f = f;
