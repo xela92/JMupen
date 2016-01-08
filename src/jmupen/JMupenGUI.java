@@ -42,7 +42,7 @@ public class JMupenGUI extends JFrame {
     private JScrollPane scroll;
     private final ArrayList<String> games;
     private JComponent comp;
-    private final static String version = "1.8.5";
+    private final static String version = "1.9.0 BETA";
 
     public JMupenGUI() {
         super.setTitle("JMupen N64 " + version);
