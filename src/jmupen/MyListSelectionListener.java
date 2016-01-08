@@ -50,16 +50,17 @@ public class MyListSelectionListener extends MouseAdapter {
                 if (JMupenUtils.getOs().equals("lin")) {
                     //TODO create CoreLin
                     CoreMac c = new CoreMac(file);
-                    c.runGame();
+                    Thread t = new Thread(c);
+                    t.start();
                 } else if (JMupenUtils.getOs().equals("mac")) {
                     CoreMac c = new CoreMac(file);
-                    c.runGame();
+                    Thread t = new Thread(c);
+                    t.start();
                 } else {
                     CoreWin c = new CoreWin(file);
-                    c.runGame();
-                }
-                JMupenGUI.getInstance().hideProgress();
-
+                    Thread t = new Thread(c);
+                    t.start();
+                }                
             }
         }
     }

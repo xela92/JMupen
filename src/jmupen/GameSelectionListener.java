@@ -36,9 +36,9 @@ public class GameSelectionListener extends JFrame implements ActionListener {
                 if (f.getAbsoluteFile().toString() == null) {
                     return false;
                 }
-                return f.getAbsoluteFile().toString().toLowerCase().endsWith("v64") || f.getAbsoluteFile().toString().toLowerCase().endsWith("n64") || f.getAbsoluteFile().toString().toLowerCase().endsWith("z64") 
-                        || f.getAbsoluteFile().toString().toLowerCase().endsWith("v64") || f.getAbsoluteFile().toString().toLowerCase().endsWith("u64") 
-                        || f.getAbsoluteFile().toString().toLowerCase().endsWith("rom") || f.getAbsoluteFile().toString().toLowerCase().endsWith("pal") || f.getAbsoluteFile().toString().toLowerCase().endsWith("bin") ||f.isDirectory();
+                return f.getAbsoluteFile().toString().toLowerCase().endsWith("v64") || f.getAbsoluteFile().toString().toLowerCase().endsWith("n64") || f.getAbsoluteFile().toString().toLowerCase().endsWith("z64")
+                        || f.getAbsoluteFile().toString().toLowerCase().endsWith("v64") || f.getAbsoluteFile().toString().toLowerCase().endsWith("u64")
+                        || f.getAbsoluteFile().toString().toLowerCase().endsWith("rom") || f.getAbsoluteFile().toString().toLowerCase().endsWith("pal") || f.getAbsoluteFile().toString().toLowerCase().endsWith("bin") || f.isDirectory();
             }
 
             @Override
@@ -57,15 +57,17 @@ public class GameSelectionListener extends JFrame implements ActionListener {
             if (JMupenUtils.getOs().equals("lin")) {
                 //TODO create CoreLin
                 CoreMac c = new CoreMac(file);
-                c.runGame();
+                Thread t = new Thread(c);
+                t.start();
             } else if (JMupenUtils.getOs().equals("mac")) {
                 CoreMac c = new CoreMac(file);
-                c.runGame();
+                Thread t = new Thread(c);
+                t.start();
             } else {
                 CoreWin c = new CoreWin(file);
-                c.runGame();
+                Thread t = new Thread(c);
+                t.start();
             }
-            JMupenGUI.getInstance().hideProgress();
 
         }
 

@@ -24,7 +24,7 @@ import static jmupen.CoreMac.deleteDirectory;
  *
  * @author xela92
  */
-public class CoreWin {
+public class CoreWin implements Runnable {
 
     private final Runtime run = getRuntime();
     //private String engine = "glide64";
@@ -72,6 +72,8 @@ public class CoreWin {
             while (errScanner.hasNext()) {
                 System.out.println(errScanner.nextLine());
             }
+            JMupenGUI.getInstance().hideProgress();
+
         } catch (IOException ex) {
             JMupenGUI.getInstance().showError("Error opening game or extracting temporary resources. ", ex.getLocalizedMessage());
         } catch (URISyntaxException ex) {
@@ -136,4 +138,8 @@ public class CoreWin {
      }
      }
      */
+    @Override
+    public void run() {
+        this.runGame();
+    }
 }

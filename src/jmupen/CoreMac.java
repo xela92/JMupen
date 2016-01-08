@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author xela92
  */
-public class CoreMac {
+public class CoreMac implements Runnable{
 
     private final Runtime run = getRuntime();
     private String engine = "glide64mk2";
@@ -69,13 +69,14 @@ public class CoreMac {
             } else {
                 System.out.println("URI: " + getClass().getClassLoader().getResource(bin).toString());
                 Files.createDirectory(tmpFolder);
-                copyProgramToTmp(new File(getClass().getClassLoader().getResource(bin).toURI()), new File("/tmp/jmupen/"+bin));
+                copyProgramToTmp(new File(getClass().getClassLoader().getResource(bin).toURI()), new File("/tmp/jmupen/" + bin));
             }
             Process process = run.exec(new String[]{corepath + "/mupen64plus", fullscreen, "--corelib", corelibpath, "--plugindir", pluginpath, "--gfx", "mupen64plus-video-" + engine, "--datadir", respath, f.getAbsolutePath()});
             Scanner scanner = new Scanner(process.getErrorStream());
             while (scanner.hasNext()) {
                 System.out.println(scanner.nextLine());
             }
+            JMupenGUI.getInstance().hideProgress();
         } catch (IOException ex) {
             JMupenGUI.getInstance().showError("Error opening game", ex.getLocalizedMessage());
         } catch (URISyntaxException ex) {
@@ -153,5 +154,10 @@ public class CoreMac {
             }
         }
         return (path.delete());
+    }
+
+    @Override
+    public void run() {
+        this.runGame();
     }
 }

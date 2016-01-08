@@ -99,7 +99,8 @@ public class JMupenGUI extends JFrame {
             
         };
         comp.setLayout(new BorderLayout());
-        comp.add(new JLabel(new ImageIcon(getClass().getClassLoader().getResource("\\raw\\spinningwheel.gif"))));
+        System.out.println(""+"raw"+JMupenUtils.getBar()+"spinningwheel.gif");
+        comp.add(new JLabel(new ImageIcon(getClass().getClassLoader().getResource("raw"+JMupenUtils.getBar()+"spinningwheel.gif"))));
         comp.setVisible(false);
         cont.add(comp);
         this.setVisible(true);
@@ -108,6 +109,10 @@ public class JMupenGUI extends JFrame {
     public void showProgress() {
         mainPnl.setVisible(false);
         comp.setVisible(true);
+        comp.repaint();
+        comp.validate();
+        repaint();
+        validate();
     }
     
     public void hideProgress() {
