@@ -66,6 +66,7 @@ public class CoreLin implements Runnable {
         try {
             File jarfile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
             System.out.println("JAR Path: " + jarfile.getAbsolutePath());
+            System.out.println("Core path: "+corepath);
             if (tmpFolder.toFile().exists()) {
                 deleteDirectory(tmpFolder.toFile());
             }
