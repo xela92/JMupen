@@ -46,6 +46,7 @@ public class MyListSelectionListener extends MouseAdapter {
                 gamePathToBeOpened = JMupenUtils.getGames().get(index).split("\\|")[1];
                 File file = new File(gamePathToBeOpened);
                 System.out.println("os: " + System.getProperty("os.name"));
+                JMupenGUI.getInstance().showProgress();
                 if (JMupenUtils.getOs().equals("lin")) {
                     //TODO create CoreLin
                     CoreMac c = new CoreMac(file);
@@ -57,6 +58,8 @@ public class MyListSelectionListener extends MouseAdapter {
                     CoreWin c = new CoreWin(file);
                     c.runGame();
                 }
+                JMupenGUI.getInstance().hideProgress();
+
             }
         }
     }
@@ -87,8 +90,6 @@ public class MyListSelectionListener extends MouseAdapter {
             menu.show(list, e.getX(), e.getY());
         }
     }
-
-
 
     private void removeLines(int removeLine, File text) throws IOException {
         List<String> textLines = FileUtils.readLines(text, StandardCharsets.UTF_8);

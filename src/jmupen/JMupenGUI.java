@@ -5,6 +5,7 @@
  */
 package jmupen;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -16,8 +17,11 @@ import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -37,6 +41,7 @@ public class JMupenGUI extends JFrame {
     private static JMupenGUI instance;
     private JScrollPane scroll;
     private final ArrayList<String> games;
+    private JComponent comp;
     private final static String version = "1.8.0";
 
     public JMupenGUI() {
@@ -90,7 +95,24 @@ public class JMupenGUI extends JFrame {
 
         //AGGIUNGO TUTTO
         cont.add(mainPnl);
+        comp = new JComponent() {
+            
+        };
+        comp.setLayout(new BorderLayout());
+        comp.add(new JLabel(new ImageIcon(getClass().getClassLoader().getResource("\\raw\\spinningwheel.gif"))));
+        comp.setVisible(false);
+        cont.add(comp);
         this.setVisible(true);
+    }
+    
+    public void showProgress() {
+        mainPnl.setVisible(false);
+        comp.setVisible(true);
+    }
+    
+    public void hideProgress() {
+       mainPnl.setVisible(true);
+       comp.setVisible(false);
     }
 
     public void initRecentGamesList() {
