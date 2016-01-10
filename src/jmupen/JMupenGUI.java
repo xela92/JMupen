@@ -26,6 +26,9 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -42,7 +45,7 @@ public class JMupenGUI extends JFrame {
     private JScrollPane scroll;
     private final ArrayList<String> games;
     private JComponent comp;
-    private final static String version = "1.9.0 BETA";
+    private final static String version = "1.9.0";
 
     public JMupenGUI() {
         super.setTitle("JMupen N64 " + version);
@@ -73,7 +76,7 @@ public class JMupenGUI extends JFrame {
         this.setLocation(dimension.width / 3, dimension.height / 3);
         mainPnl = new JPanel();
         mainPnl.setBorder(new TitledBorder("JMupen Selector"));
-        mainPnl.setPreferredSize(new Dimension(300, 200));
+        mainPnl.setPreferredSize(new Dimension(320, 250));
         mainPnl.setMinimumSize(new Dimension(120, 150));
 
         JButton btn = new JButton("Select Game");
@@ -92,6 +95,13 @@ public class JMupenGUI extends JFrame {
         });
 
         mainPnl.add(opt);
+        
+        if (JMupenUtils.getOs().equalsIgnoreCase("lin")) {
+            JTextArea f = new JTextArea();
+            f.setEditable(false);            
+            f.setText("Dear Linux user,\nif it doesn't work for you please solve \ndependencies.\nRead the README file at /tmp/JMupen/bin/lin/res");
+            mainPnl.add(f);
+        }
 
         //AGGIUNGO TUTTO
         cont.add(mainPnl);
@@ -99,7 +109,6 @@ public class JMupenGUI extends JFrame {
             
         };
         comp.setLayout(new BorderLayout());
-        System.out.println(""+"raw"+JMupenUtils.getBar()+"spinningwheel.gif");
         comp.add(new JLabel(new ImageIcon(getClass().getClassLoader().getResource("raw"+JMupenUtils.getBar()+"spinningwheel.gif"))));
         comp.setVisible(false);
         cont.add(comp);

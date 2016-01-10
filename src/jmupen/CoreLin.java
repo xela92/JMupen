@@ -48,6 +48,7 @@ public class CoreLin implements Runnable {
     private File f;
 
     public CoreLin(File f) {
+        JMupenUtils.setUsingLegacyVersion(true);
         if (JMupenUtils.getUsingLegacyVersion()) {
             bin = "bin_legacy";
             engine = "rice";

@@ -62,6 +62,11 @@ public class JMupenOptions extends JFrame {
         JCheckBox lv = new JCheckBox("Use legacy version");
         lv.setToolTipText("Use this if you have problems running games");
         lv.setSelected(JMupenUtils.getUsingLegacyVersion());
+        if (JMupenUtils.getOs().equalsIgnoreCase("lin")) {
+           lv.setSelected(true);
+           lv.setEnabled(false);
+        }
+
         mainPnl.add(lv, "span, grow");
         JLabel lab = new JLabel("Save files directory");
         mainPnl.add(lab, "gaptop 30px");
