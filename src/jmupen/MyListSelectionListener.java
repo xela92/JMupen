@@ -43,6 +43,7 @@ public class MyListSelectionListener extends MouseAdapter {
             if (list.getSelectedIndex() != -1) {
                 System.out.println("INDEX: " + index + " Total:" + JMupenUtils.getGames().size());
                 System.out.println("Games: " + JMupenUtils.getGames().get(index));
+                System.out.println("Recents file: "+JMupenUtils.getRecents().toString());
                 gamePathToBeOpened = JMupenUtils.getGames().get(index).split("\\|")[1];
                 File file = new File(gamePathToBeOpened);
                 System.out.println("os: " + System.getProperty("os.name"));

@@ -56,7 +56,7 @@ public final class JMupenUtils {
     }
 
     public static void addRecentGame(File game) {
-        games = JMupenUtils.getGamesFromFile(Paths.get(JMupenUtils.getHome() + JMupenUtils.getBar() + "jmupen.recents"));
+        games = JMupenUtils.getGamesFromFile(Paths.get(JMupenUtils.getConfigDir()+ JMupenUtils.getBar() + "jmupen.recents"));
         games.add(game.getName() + "|" + game.getAbsolutePath());
         JMupenUtils.setGames(games);
         JMupenGUI.getInstance().getModel().addElement(game.getName());
@@ -131,7 +131,6 @@ public final class JMupenUtils {
     public static String getOs() {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
-
             return "win";
         } else if (os.contains("mac")) {
             return "mac";

@@ -45,13 +45,13 @@ public class JMupenGUI extends JFrame {
     private JScrollPane scroll;
     private final ArrayList<String> games;
     private JComponent comp;
-    private final static String version = "1.9.1";
+    private final static String version = "1.9.2";
 
     public JMupenGUI() {
         super.setTitle("JMupen N64 " + version);
         instance = JMupenGUI.this;
         initUI();
-        games = JMupenUtils.getGamesFromFile(Paths.get(JMupenUtils.getHome() + JMupenUtils.getBar() + "jmupen.recents"));
+        games = JMupenUtils.getGamesFromFile(Paths.get(JMupenUtils.getConfigDir()+ JMupenUtils.getBar() + "jmupen.recents"));
         JMupenUtils.setGames(games);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         initRecentGamesList();
