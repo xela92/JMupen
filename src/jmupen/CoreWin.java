@@ -18,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
-import static jmupen.CoreMac.deleteDirectory;
 
 /**
  *
@@ -42,43 +41,6 @@ public class CoreWin implements Runnable {
             bin = "bin";
         }
         corepath = tmpFolder.toFile().getAbsolutePath().concat("\\").concat(bin).concat("\\").concat("win");
-    }
-
-    public void runGame() {
-        try {
-            File jarfile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-            System.out.println("JAR Path: " + jarfile.getAbsolutePath());
-            if (tmpFolder.toFile().exists()) {
-                deleteDirectory(tmpFolder.toFile());
-            }
-
-            if (jarfile.exists() && !jarfile.isDirectory()) {
-                File target = Files.createDirectory(tmpFolder).toFile();
-                extractJar(jarfile, target);
-                new File(corepath.concat("\\mupen64plus")).setExecutable(true);
-            } else {
-                System.out.println("URI: " + getClass().getClassLoader().getResource("bin").toString());
-                Files.createDirectory(tmpFolder);
-                copyProgramToTmp(new File(getClass().getClassLoader().getResource("bin").toURI()), new File(tmpFolder.toFile().getAbsolutePath().concat("\\bin")));
-            }
-
-            Process process = run.exec(new String[]{corepath + "\\mupen64plus-ui-console.exe", fullscreen, f.getAbsolutePath()}, null, new File(corepath));
-            //System.out.println("Cmd: "+Arrays.toString(new String[]{corepath + "\\mupen64plus-ui-console.exe", fullscreen, f.getAbsolutePath()}, null, new File(corepath));
-            Scanner scanner = new Scanner(process.getInputStream());
-            while (scanner.hasNext()) {
-                System.out.println(scanner.nextLine());
-            }
-            Scanner errScanner = new Scanner(process.getErrorStream());
-            while (errScanner.hasNext()) {
-                System.out.println(errScanner.nextLine());
-            }
-            JMupenGUI.getInstance().hideProgress();
-
-        } catch (IOException ex) {
-            JMupenGUI.getInstance().showError("Error opening game or extracting temporary resources. ", ex.getLocalizedMessage());
-        } catch (URISyntaxException ex) {
-            JMupenGUI.getInstance().showError("Error opening game ", ex.getLocalizedMessage());
-        }
     }
 
     public void copyProgramToTmp(File sourceLocation, File targetLocation)
@@ -112,10 +74,6 @@ public class CoreWin implements Runnable {
         //new File(targetLocation.getAbsolutePath().concat("/mac/core/mupen64plus")).setExecutable(true);
     }
 
-    public void setFullscreen() {
-        fullscreen = "--fullscreen";
-    }
-
     public void extractJar(File jarFile, File destDir) {
         try {
             System.out.println("Extracting JAR...");
@@ -126,6 +84,49 @@ public class CoreWin implements Runnable {
             JMupenGUI.getInstance().showError("Error extracting jar", e.getLocalizedMessage());
         }
     }
+
+    @Override
+    public void run() {
+        this.runGame();
+    }
+    
+    public void runGame() {
+        try {
+            File jarfile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            System.out.println("JAR Path: " + jarfile.getAbsolutePath());
+            if (tmpFolder.toFile().exists()) {
+                JMupenUtils.deleteDirectory(tmpFolder.toFile());
+            }
+
+            if (jarfile.exists() && !jarfile.isDirectory()) {
+                File target = Files.createDirectory(tmpFolder).toFile();
+                extractJar(jarfile, target);
+                new File(corepath.concat("\\mupen64plus")).setExecutable(true);
+            } else {
+                System.out.println("URI: " + getClass().getClassLoader().getResource("bin").toString());
+                Files.createDirectory(tmpFolder);
+                copyProgramToTmp(new File(getClass().getClassLoader().getResource("bin").toURI()), new File(tmpFolder.toFile().getAbsolutePath().concat("\\bin")));
+            }
+
+            Process process = run.exec(new String[]{corepath + "\\mupen64plus-ui-console.exe", fullscreen, f.getAbsolutePath()}, null, new File(corepath));
+            //System.out.println("Cmd: "+Arrays.toString(new String[]{corepath + "\\mupen64plus-ui-console.exe", fullscreen, f.getAbsolutePath()}, null, new File(corepath));
+            Scanner scanner = new Scanner(process.getInputStream());
+            while (scanner.hasNext()) {
+                System.out.println(scanner.nextLine());
+            }
+            Scanner errScanner = new Scanner(process.getErrorStream());
+            while (errScanner.hasNext()) {
+                System.out.println(errScanner.nextLine());
+            }
+            JMupenGUI.getInstance().hideProgress();
+
+        } catch (IOException ex) {
+            JMupenGUI.getInstance().showError("Error opening game or extracting temporary resources. ", ex.getLocalizedMessage());
+        } catch (URISyntaxException ex) {
+            JMupenGUI.getInstance().showError("Error opening game ", ex.getLocalizedMessage());
+        }
+    }
+
 
     /*   public void setGFX(String value) {
      switch (value) {
@@ -138,8 +139,7 @@ public class CoreWin implements Runnable {
      }
      }
      */
-    @Override
-    public void run() {
-        this.runGame();
+    public void setFullscreen() {
+        fullscreen = "--fullscreen";
     }
 }

@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author xela92
  */
-public class CoreMac implements Runnable{
+public class CoreMac implements Runnable {
 
     private final Runtime run = getRuntime();
     private String engine = "glide64mk2";
@@ -51,47 +51,6 @@ public class CoreMac implements Runnable{
         pluginpath = corepath;
         respath = tmpFolderPath.concat("/").concat(bin).concat("/mac/res");
         this.f = f;
-    }
-
-    public void runGame() {
-        try {
-            File jarfile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-            System.out.println("JAR Path: " + jarfile.getAbsolutePath());
-            if (tmpFolder.toFile().exists()) {
-                deleteDirectory(tmpFolder.toFile());
-            }
-
-            if (jarfile.exists() && !jarfile.isDirectory()) {
-                File target = Files.createDirectory(tmpFolder).toFile();
-                extractJar(jarfile, target);
-                new File(corepath.concat("/mupen64plus")).setExecutable(true);
-            } else {
-                System.out.println("URI: " + getClass().getClassLoader().getResource(bin).toString());
-                Files.createDirectory(tmpFolder);
-                copyProgramToTmp(new File(getClass().getClassLoader().getResource(bin).toURI()), new File("/tmp/jmupen/" + bin));
-            }
-            Process process = run.exec(new String[]{corepath + "/mupen64plus", fullscreen, "--corelib", corelibpath, "--plugindir", pluginpath, "--gfx", "mupen64plus-video-" + engine, "--datadir", respath, f.getAbsolutePath()});
-            Scanner scanner = new Scanner(process.getErrorStream());
-            while (scanner.hasNext()) {
-                System.out.println(scanner.nextLine());
-            }
-            JMupenGUI.getInstance().hideProgress();
-        } catch (IOException ex) {
-            JMupenGUI.getInstance().showError("Error opening game", ex.getLocalizedMessage());
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(CoreMac.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void extractJar(File jarFile, File destDir) {
-        try {
-            System.out.println("Extracting JAR...");
-            JarUnpacker jarUnpacker = new JarUnpacker();
-            jarUnpacker.unpack(jarFile.getAbsolutePath(), destDir.getAbsolutePath());
-
-        } catch (Exception e) {
-            JMupenGUI.getInstance().showError("Error extracting jar", e.getLocalizedMessage());
-        }
     }
 
     public void copyProgramToTmp(File sourceLocation, File targetLocation)
@@ -125,6 +84,52 @@ public class CoreMac implements Runnable{
         new File(targetLocation.getAbsolutePath().concat("/mac/core/mupen64plus")).setExecutable(true);
     }
 
+    public void extractJar(File jarFile, File destDir) {
+        try {
+            System.out.println("Extracting JAR...");
+            JarUnpacker jarUnpacker = new JarUnpacker();
+            jarUnpacker.unpack(jarFile.getAbsolutePath(), destDir.getAbsolutePath());
+
+        } catch (Exception e) {
+            JMupenGUI.getInstance().showError("Error extracting jar", e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void run() {
+        this.runGame();
+    }
+
+    public void runGame() {
+        try {
+            File jarfile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            System.out.println("JAR Path: " + jarfile.getAbsolutePath());
+            if (tmpFolder.toFile().exists()) {
+                JMupenUtils.deleteDirectory(tmpFolder.toFile());
+            }
+
+            if (jarfile.exists() && !jarfile.isDirectory()) {
+                File target = Files.createDirectory(tmpFolder).toFile();
+                extractJar(jarfile, target);
+                new File(corepath.concat("/mupen64plus")).setExecutable(true);
+            } else {
+                System.out.println("URI: " + getClass().getClassLoader().getResource(bin).toString());
+                Files.createDirectory(tmpFolder);
+                copyProgramToTmp(new File(getClass().getClassLoader().getResource(bin).toURI()), new File("/tmp/jmupen/" + bin));
+            }
+            Process process = run.exec(new String[]{corepath + "/mupen64plus", fullscreen, "--corelib", corelibpath, "--plugindir", pluginpath, "--gfx", "mupen64plus-video-" + engine, "--datadir", respath, f.getAbsolutePath()});
+            Scanner scanner = new Scanner(process.getErrorStream());
+            while (scanner.hasNext()) {
+                System.out.println(scanner.nextLine());
+            }
+            JMupenGUI.getInstance().hideProgress();
+        } catch (IOException ex) {
+            JMupenGUI.getInstance().showError("Error opening game", ex.getLocalizedMessage());
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(CoreMac.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void setFullscreen() {
         fullscreen = "--fullscreen";
     }
@@ -141,22 +146,4 @@ public class CoreMac implements Runnable{
         }
     }
 
-    static public boolean deleteDirectory(File path) {
-        if (path.exists()) {
-            File[] files = path.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isDirectory()) {
-                    deleteDirectory(files[i]);
-                } else {
-                    files[i].delete();
-                }
-            }
-        }
-        return (path.delete());
-    }
-
-    @Override
-    public void run() {
-        this.runGame();
-    }
 }

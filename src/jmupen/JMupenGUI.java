@@ -26,9 +26,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -51,7 +49,7 @@ public class JMupenGUI extends JFrame {
         super.setTitle("JMupen N64 " + version);
         instance = JMupenGUI.this;
         initUI();
-        games = JMupenUtils.getGamesFromFile(Paths.get(JMupenUtils.getConfigDir()+ JMupenUtils.getBar() + "jmupen.recents"));
+        games = JMupenUtils.getGamesFromFile(Paths.get(JMupenUtils.getConfigDir() + JMupenUtils.getBar() + "jmupen.recents"));
         JMupenUtils.setGames(games);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         initRecentGamesList();
@@ -65,6 +63,42 @@ public class JMupenGUI extends JFrame {
             instance = new JMupenGUI();
         }
         return instance;
+    }
+
+    public DefaultListModel getModel() {
+        return model;
+    }
+
+    public void hideProgress() {
+        mainPnl.setVisible(true);
+        comp.setVisible(false);
+    }
+
+    public void initRecentGamesList() {
+        ArrayList<String> list = new ArrayList<String>();
+        for (String game : games) {
+            list.add(game.split("\\|")[0]);
+        }
+        model = new DefaultListModel();
+        gamelist = new JList(model);
+        for (Object o : list.toArray()) {
+            model.addElement((String) o);
+        }
+
+        //gamelist.setModel(new DefaultListModel<String>());
+        gamelist.setBorder(new TitledBorder("Recent Games"));
+        gamelist.addMouseListener(new MyListSelectionListener(gamelist, model));
+        gamelist.setVisible(true);
+        mainPnl.add(gamelist);
+
+        if (scroll == null) {
+            scroll = new JScrollPane(gamelist,
+                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            scroll.setVisible(true);
+            this.add(scroll);
+            this.setMinimumSize(new Dimension(200, 200));
+        }
+
     }
 
     public void initUI() {
@@ -95,10 +129,10 @@ public class JMupenGUI extends JFrame {
         });
 
         mainPnl.add(opt);
-        
+
         if (JMupenUtils.getOs().equalsIgnoreCase("lin")) {
             JTextArea f = new JTextArea();
-            f.setEditable(false);            
+            f.setEditable(false);
             f.setText("Dear Linux user,\nif it doesn't work for you please solve \ndependencies.\nRead the README file at /tmp/JMupen/bin/lin/res");
             mainPnl.add(f);
         }
@@ -106,15 +140,19 @@ public class JMupenGUI extends JFrame {
         //AGGIUNGO TUTTO
         cont.add(mainPnl);
         comp = new JComponent() {
-            
+
         };
         comp.setLayout(new BorderLayout());
-        comp.add(new JLabel(new ImageIcon(getClass().getClassLoader().getResource("raw"+JMupenUtils.getBar()+"spinningwheel.gif"))));
+        comp.add(new JLabel(new ImageIcon(getClass().getClassLoader().getResource("raw" + JMupenUtils.getBar() + "spinningwheel.gif"))));
         comp.setVisible(false);
         cont.add(comp);
         this.setVisible(true);
     }
-    
+
+    public void showError(String mainMsg, String fullMess) {
+        JOptionPane.showMessageDialog(this, mainMsg + "\n Full message: " + fullMess, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
     public void showProgress() {
         mainPnl.setVisible(false);
         comp.setVisible(true);
@@ -122,46 +160,6 @@ public class JMupenGUI extends JFrame {
         comp.validate();
         repaint();
         validate();
-    }
-    
-    public void hideProgress() {
-       mainPnl.setVisible(true);
-       comp.setVisible(false);
-    }
-
-    public void initRecentGamesList() {
-        ArrayList<String> list = new ArrayList<String>();
-        for (String game : games) {
-            list.add(game.split("\\|")[0]);
-        }
-        model = new DefaultListModel();
-        gamelist = new JList(model);
-        for (Object o : list.toArray()) {
-            model.addElement((String) o);
-        }
-
-        //gamelist.setModel(new DefaultListModel<String>());
-        gamelist.setBorder(new TitledBorder("Recent Games"));
-        gamelist.addMouseListener(new MyListSelectionListener(gamelist, model));
-        gamelist.setVisible(true);
-        mainPnl.add(gamelist);
-
-        if (scroll == null) {
-            scroll = new JScrollPane(gamelist,
-                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-            scroll.setVisible(true);
-            this.add(scroll);
-            this.setMinimumSize(new Dimension(200, 200));
-        }
-
-    }
-
-    public DefaultListModel getModel() {
-        return model;
-    }
-
-    public void showError(String mainMsg, String fullMess) {
-        JOptionPane.showMessageDialog(this, mainMsg + "\n Full message: " + fullMess, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
 }

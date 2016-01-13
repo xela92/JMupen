@@ -30,6 +30,41 @@ public final class JMupenUtils {
     private static boolean fullscreen = true;
     private static boolean using_legacy = false;
 
+    public static void addGame(File game) {
+        JMupenUtils.clearOldRecents();
+        games.add(game.getName() + "|" + game.getAbsolutePath());
+    }
+
+    public static void addRecentGame(File game) {
+        games = JMupenUtils.getGamesFromFile(Paths.get(JMupenUtils.getConfigDir() + JMupenUtils.getBar() + "jmupen.recents"));
+        games.add(game.getName() + "|" + game.getAbsolutePath());
+        JMupenUtils.setGames(games);
+        JMupenGUI.getInstance().getModel().addElement(game.getName());
+        JMupenUtils.clearOldRecents();
+
+    }
+
+    public static void clearOldRecents() {
+        if (games.toArray().length > 6) {
+            games.remove(0);
+            JMupenGUI.getInstance().getModel().removeElementAt(0);
+        }
+    }
+
+    public static boolean deleteDirectory(File path) {
+        if (path.exists()) {
+            File[] files = path.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
+                    deleteDirectory(files[i]);
+                } else {
+                    files[i].delete();
+                }
+            }
+        }
+        return (path.delete());
+    }
+
     public static ArrayList<String> getGamesFromFile(Path recents) {
         if (!Files.exists(recents)) {
             try {
@@ -55,29 +90,22 @@ public final class JMupenUtils {
         return recentsFile;
     }
 
-    public static void addRecentGame(File game) {
-        games = JMupenUtils.getGamesFromFile(Paths.get(JMupenUtils.getConfigDir()+ JMupenUtils.getBar() + "jmupen.recents"));
-        games.add(game.getName() + "|" + game.getAbsolutePath());
-        JMupenUtils.setGames(games);
-        JMupenGUI.getInstance().getModel().addElement(game.getName());
-        JMupenUtils.clearOldRecents();
-
-    }
-
-    public static void setFullscreen(boolean ans) {
-        fullscreen = ans;
-    }
-
     public static boolean getUsingLegacyVersion() {
         return using_legacy;
     }
 
-    public static void setUsingLegacyVersion(boolean ans) {
-        using_legacy = ans;
+    public static String getBar() {
+        switch (System.getProperty("os.name")) {
+            case "win":
+                return "\\";
+            default:
+                return "/";
+        }
     }
 
-    public static boolean getFullscreen() {
-        return fullscreen;
+    public static File getConf() {
+        return new File(JMupenUtils.getConfigDir() + JMupenUtils.getBar() + "jmupen.conf");
+
     }
 
     public static String getConfigDir() {
@@ -88,9 +116,8 @@ public final class JMupenUtils {
         }
     }
 
-    public static void addGame(File game) {
-        JMupenUtils.clearOldRecents();
-        games.add(game.getName() + "|" + game.getAbsolutePath());
+    public static boolean getFullscreen() {
+        return fullscreen;
     }
 
     public static ArrayList<String> getGames() {
@@ -98,34 +125,9 @@ public final class JMupenUtils {
         return games;
     }
 
-    public static void clearOldRecents() {
-        if (games.toArray().length > 6) {
-            games.remove(0);
-            JMupenGUI.getInstance().getModel().removeElementAt(0);
-        }
-    }
+    public static String getHome() {
+        return System.getProperty("user.home");
 
-    public static void setGames(ArrayList<String> g) {
-        JMupenUtils.clearOldRecents();
-        games = g;
-    }
-
-    public static void writeGamesToFile() {
-        List<String> listGames = (List) games;
-        try {
-            Files.write(recentsFile, listGames, Charset.forName("UTF-8"));
-        } catch (IOException ex) {
-            gui.showError("Error writing recents file", "Full message: " + ex.getLocalizedMessage());
-        }
-    }
-
-    public static String getBar() {
-        switch (System.getProperty("os.name")) {
-            case "win":
-                return "\\";
-            default:
-                return "/";
-        }
     }
 
     public static String getOs() {
@@ -138,27 +140,6 @@ public final class JMupenUtils {
 
             return "lin";
         }
-    }
-
-    public static String getHome() {
-        return System.getProperty("user.home");
-
-    }
-
-    public static void saveParamChanges() {
-        try {
-            props.setProperty("Fullscreen", "" + JMupenUtils.getFullscreen());
-            props.setProperty("UsingLegacy", "" + JMupenUtils.getUsingLegacyVersion());
-            OutputStream out = new FileOutputStream(JMupenUtils.getConf());
-            props.store(out, "JMupen Configuration File");
-        } catch (Exception e) {
-            JMupenGUI.getInstance().showError("Error saving conf file.", e.getLocalizedMessage());
-        }
-    }
-
-    public static File getConf() {
-        return new File(JMupenUtils.getConfigDir() + JMupenUtils.getBar() + "jmupen.conf");
-
     }
 
     public static void loadParams() {
@@ -182,6 +163,39 @@ public final class JMupenUtils {
             saveParamChanges();
         }
 
+    }
+
+    public static void saveParamChanges() {
+        try {
+            props.setProperty("Fullscreen", "" + JMupenUtils.getFullscreen());
+            props.setProperty("UsingLegacy", "" + JMupenUtils.getUsingLegacyVersion());
+            OutputStream out = new FileOutputStream(JMupenUtils.getConf());
+            props.store(out, "JMupen Configuration File");
+        } catch (Exception e) {
+            JMupenGUI.getInstance().showError("Error saving conf file.", e.getLocalizedMessage());
+        }
+    }
+
+    public static void setGames(ArrayList<String> g) {
+        JMupenUtils.clearOldRecents();
+        games = g;
+    }
+
+    public static void setFullscreen(boolean ans) {
+        fullscreen = ans;
+    }
+
+    public static void setUsingLegacyVersion(boolean ans) {
+        using_legacy = ans;
+    }
+
+    public static void writeGamesToFile() {
+        List<String> listGames = (List) games;
+        try {
+            Files.write(recentsFile, listGames, Charset.forName("UTF-8"));
+        } catch (IOException ex) {
+            gui.showError("Error writing recents file", "Full message: " + ex.getLocalizedMessage());
+        }
     }
 
 }
