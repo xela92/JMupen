@@ -32,6 +32,9 @@ public class CoreWin implements Runnable {
     private String bin = "bin";
     private Path tmpFolder = Paths.get(System.getProperty("java.io.tmpdir") + "\\jmupen");
     private String corepath;
+    private String saveFileDir = "";
+    private String saveIntFileDir = "";
+    private String set = "";
 
     public CoreWin(File f) {
         this.f = f;
@@ -41,6 +44,11 @@ public class CoreWin implements Runnable {
             bin = "bin";
         }
         corepath = tmpFolder.toFile().getAbsolutePath().concat("\\").concat(bin).concat("\\").concat("win");
+        if (JMupenUtils.getSaveFolder() != null && JMupenUtils.getSaveFolder().exists()) {
+            saveFileDir = "Core[SaveStatePath]=" + JMupenUtils.getSaveFolder().getAbsolutePath();
+            saveIntFileDir = "Core[SaveSRAMPath]=" + JMupenUtils.getSaveFolder().getAbsolutePath();
+            set = "--set";
+        }
     }
 
     public void copyProgramToTmp(File sourceLocation, File targetLocation)
@@ -89,7 +97,7 @@ public class CoreWin implements Runnable {
     public void run() {
         this.runGame();
     }
-    
+
     public void runGame() {
         try {
             File jarfile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
@@ -108,7 +116,7 @@ public class CoreWin implements Runnable {
                 copyProgramToTmp(new File(getClass().getClassLoader().getResource("bin").toURI()), new File(tmpFolder.toFile().getAbsolutePath().concat("\\bin")));
             }
 
-            Process process = run.exec(new String[]{corepath + "\\mupen64plus-ui-console.exe", fullscreen, f.getAbsolutePath()}, null, new File(corepath));
+            Process process = run.exec(new String[]{corepath + "\\mupen64plus-ui-console.exe", fullscreen, set, saveFileDir, set, saveIntFileDir, f.getAbsolutePath()}, null, new File(corepath));
             //System.out.println("Cmd: "+Arrays.toString(new String[]{corepath + "\\mupen64plus-ui-console.exe", fullscreen, f.getAbsolutePath()}, null, new File(corepath));
             Scanner scanner = new Scanner(process.getInputStream());
             while (scanner.hasNext()) {

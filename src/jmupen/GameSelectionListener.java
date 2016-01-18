@@ -67,7 +67,7 @@ public class GameSelectionListener extends JFrame implements ActionListener {
                 Thread t = new Thread(c);
                 t.start();
             }
-
+            
         }
 
     }

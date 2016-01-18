@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -53,7 +54,7 @@ public class JMupenOptions extends JFrame {
         MigLayout layout = new MigLayout();
         mainPnl = new JPanel(layout);
         mainPnl.setBorder(new TitledBorder("JMupen Options"));
-        mainPnl.setPreferredSize(new Dimension(300, 200));
+        mainPnl.setPreferredSize(new Dimension(350, 200));
         mainPnl.setMinimumSize(new Dimension(120, 150));
 
         JCheckBox fs = new JCheckBox("Fullscreen");
@@ -63,15 +64,18 @@ public class JMupenOptions extends JFrame {
         lv.setToolTipText("Use this if you have problems running games");
         lv.setSelected(JMupenUtils.getUsingLegacyVersion());
         if (JMupenUtils.getOs().equalsIgnoreCase("lin")) {
-           lv.setSelected(true);
-           lv.setEnabled(false);
+            lv.setSelected(true);
+            lv.setEnabled(false);
         }
 
         mainPnl.add(lv, "span, grow");
         JLabel lab = new JLabel("Save files directory");
         mainPnl.add(lab, "gaptop 30px");
-        JButton savedir  = new JButton("Browse...");
+        JButton savedir = new JButton("Browse...");
         mainPnl.add(savedir, "gaptop 30px");
+        JButton resetdir = new JButton("Reset");
+        mainPnl.add(resetdir, "gaptop 30px");
+        savedir.addActionListener(new SaveFolderSelectionListener(new File(JMupenUtils.getHome())));
         JButton btn = new JButton("Save");
         btn.setMinimumSize(new Dimension(200, 200));
 
@@ -94,8 +98,19 @@ public class JMupenOptions extends JFrame {
                     JMupenUtils.setUsingLegacyVersion(false);
                     System.out.println("Saving: not legacy version");
                 }
+                if (JMupenUtils.getSaveFolder() != null) {
+                    System.out.println("Saving: save folder = " + JMupenUtils.getSaveFolder().getAbsolutePath());
+                }
                 JMupenUtils.saveParamChanges();
                 dispose();
+            }
+        });
+        
+        resetdir.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JMupenUtils.resetSaveFolder();
             }
         });
 

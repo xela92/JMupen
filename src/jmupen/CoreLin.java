@@ -46,6 +46,9 @@ public class CoreLin implements Runnable {
     private String pluginpath;
     private String respath;
     private File f;
+    private String saveFileDir = "";
+    private String saveIntFileDir = "";
+    private String set = "";
 
     public CoreLin(File f) {
         JMupenUtils.setUsingLegacyVersion(true);
@@ -60,6 +63,11 @@ public class CoreLin implements Runnable {
         corelibpath = tmpFolderPath.concat("/").concat(bin).concat("/lin/core/libmupen64plus.so.2.0.0");
         pluginpath = corepath;
         respath = tmpFolderPath.concat("/").concat(bin).concat("/lin/res");
+        if (JMupenUtils.getSaveFolder() != null && JMupenUtils.getSaveFolder().exists()) {
+            saveFileDir = "Core[SaveStatePath]=" + JMupenUtils.getSaveFolder().getAbsolutePath();
+            saveIntFileDir = "Core[SaveSRAMPath]=" + JMupenUtils.getSaveFolder().getAbsolutePath();
+            set = "--set";
+        }
         this.f = f;
     }
 
@@ -128,7 +136,7 @@ public class CoreLin implements Runnable {
                 Files.createDirectory(tmpFolder);
                 copyProgramToTmp(new File(getClass().getClassLoader().getResource(bin).toURI()), new File("/tmp/jmupen/" + bin));
             }
-            Process process = run.exec(new String[]{corepath + "/mupen64plus", fullscreen, "--corelib", corelibpath, "--plugindir", pluginpath, "--gfx", "mupen64plus-video-" + engine, "--datadir", respath, f.getAbsolutePath()});
+            Process process = run.exec(new String[]{corepath + "/mupen64plus", fullscreen, "--corelib", corelibpath, "--plugindir", pluginpath, "--gfx", "mupen64plus-video-" + engine, "--datadir", respath, set, saveFileDir, set, saveIntFileDir, f.getAbsolutePath()});
             Scanner scanner = new Scanner(process.getErrorStream());
             while (scanner.hasNext()) {
                 System.out.println(scanner.nextLine());

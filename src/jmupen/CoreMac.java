@@ -37,6 +37,9 @@ public class CoreMac implements Runnable {
     private String pluginpath;
     private String respath;
     private File f;
+    private String saveFileDir = "";
+    private String saveIntFileDir = "";
+    private String set = "";
 
     public CoreMac(File f) {
         if (JMupenUtils.getUsingLegacyVersion()) {
@@ -50,6 +53,11 @@ public class CoreMac implements Runnable {
         corelibpath = tmpFolderPath.concat("/").concat(bin).concat("/mac/core/libmupen64plus.dylib");
         pluginpath = corepath;
         respath = tmpFolderPath.concat("/").concat(bin).concat("/mac/res");
+        if (JMupenUtils.getSaveFolder() != null && JMupenUtils.getSaveFolder().exists()) {
+            saveFileDir = "Core[SaveStatePath]=" + JMupenUtils.getSaveFolder().getAbsolutePath();
+            saveIntFileDir = "Core[SaveSRAMPath]=" + JMupenUtils.getSaveFolder().getAbsolutePath();
+            set = "--set";
+        }
         this.f = f;
     }
 
@@ -116,8 +124,8 @@ public class CoreMac implements Runnable {
                 System.out.println("URI: " + getClass().getClassLoader().getResource(bin).toString());
                 Files.createDirectory(tmpFolder);
                 copyProgramToTmp(new File(getClass().getClassLoader().getResource(bin).toURI()), new File("/tmp/jmupen/" + bin));
-            }
-            Process process = run.exec(new String[]{corepath + "/mupen64plus", fullscreen, "--corelib", corelibpath, "--plugindir", pluginpath, "--gfx", "mupen64plus-video-" + engine, "--datadir", respath, f.getAbsolutePath()});
+            }            
+            Process process = run.exec(new String[]{corepath + "/mupen64plus", fullscreen, "--corelib", corelibpath, "--plugindir", pluginpath, "--gfx", "mupen64plus-video-" + engine, "--datadir", respath, set, saveFileDir, set, saveIntFileDir, f.getAbsolutePath()});
             Scanner scanner = new Scanner(process.getErrorStream());
             while (scanner.hasNext()) {
                 System.out.println(scanner.nextLine());

@@ -29,6 +29,7 @@ public final class JMupenUtils {
     private static final Path recentsFile = Paths.get(JMupenUtils.getConfigDir() + JMupenUtils.getBar() + "jmupen.recents");
     private static boolean fullscreen = true;
     private static boolean using_legacy = false;
+    private static File saveFolder;
 
     public static void addGame(File game) {
         JMupenUtils.clearOldRecents();
@@ -51,6 +52,40 @@ public final class JMupenUtils {
         }
     }
 
+    /* public static void copyToSaveFolder() {
+     if (JMupenUtils.getSaveFolder() != null) {
+     File sourceLocation = new File(JMupenUtils.getJmupenHome().concat(JMupenUtils.getBar()).concat("save"));
+     if (!Files.exists(Paths.get(sourceLocation.getParent()))) {
+     JMupenGUI.getInstance().showError("Save files' directory not found", "The directory no longer exists. I will use default directory");
+     JMupenUtils.setSaveFolder(null);
+     JMupenUtils.resetSaveFolder();
+     }
+     try {
+     FileUtils.copyDirectory(sourceLocation, JMupenUtils.getSaveFolder());
+     } catch (IOException e) {
+     JMupenGUI.getInstance().showError("Save files copy to selected folder failed. ", e.getLocalizedMessage());
+     }
+     }
+     }
+
+     public static void copyFromSaveFolder() {
+     if (JMupenUtils.getSaveFolder() != null) {
+     File destLocation = new File(JMupenUtils.getJmupenHome().concat(JMupenUtils.getBar()).concat("save"));
+     if (destLocation.exists()) {
+     destLocation.renameTo(new File(destLocation.getAbsolutePath().concat(".backup")));
+     }
+     if (JMupenUtils.getSaveFolder().list().length > 0) {
+     try {
+     FileUtils.copyDirectory(JMupenUtils.getSaveFolder(), destLocation);
+     } catch (IOException e) {
+     JMupenGUI.getInstance().showError("Save files copy-back to local folder failed. ", e.getLocalizedMessage());
+     }
+     }
+
+     }
+
+     }
+     */
     public static boolean deleteDirectory(File path) {
         if (path.exists()) {
             File[] files = path.listFiles();
@@ -84,6 +119,27 @@ public final class JMupenUtils {
         } else {
             return null;
         }
+    }
+
+    public static String getJmupenHome() {
+        if (JMupenUtils.getOs().equalsIgnoreCase("win")) {
+            return System.getenv("APPDATA").concat(JMupenUtils.getBar().concat("Mupen64Plus"));
+        } else {
+            return JMupenUtils.getHome().concat(JMupenUtils.getBar()).concat(".local").concat(JMupenUtils.getBar()).concat("share")
+                    .concat(JMupenUtils.getBar()).concat("mupen64plus");
+        }
+    }
+
+    public static String getJmupenConfigDir() {
+        if (JMupenUtils.getOs().equalsIgnoreCase("win")) {
+            return System.getenv("APPDATA").concat(JMupenUtils.getBar().concat("Mupen64Plus"));
+        } else {
+            return JMupenUtils.getHome().concat(JMupenUtils.getBar()).concat(".config").concat(JMupenUtils.getBar()).concat("mupen64plus");
+        }
+    }
+
+    public static String getJmupenSaveDir() {
+        return JMupenUtils.getJmupenHome().concat(JMupenUtils.getBar()).concat("save");
     }
 
     public static Path getRecents() {
@@ -142,6 +198,15 @@ public final class JMupenUtils {
         }
     }
 
+    public static File getSaveFolder() {
+        if (!saveFolder.canRead() && !saveFolder.canWrite()) {
+            JMupenGUI.getInstance().showError("Can't read savefiles directory.", "Rolling back to default savefiles directory.");
+            JMupenUtils.setSaveFolder(new File(JMupenUtils.getJmupenSaveDir()));
+            JMupenUtils.saveParamChanges();
+        }
+        return saveFolder;
+    }
+
     public static void loadParams() {
         InputStream is = null;
         if (JMupenUtils.getConf().exists()) {
@@ -156,6 +221,7 @@ public final class JMupenUtils {
                 props.load(is);
                 JMupenUtils.setFullscreen(props.get("Fullscreen").equals("true"));
                 JMupenUtils.setUsingLegacyVersion(props.get("UsingLegacy").equals("true"));
+                JMupenUtils.setSaveFolder(!props.get("SaveFolder").equals("") ? new File((String) props.get("SaveFolder")) : null);
             } catch (Exception e) {
                 saveParamChanges();
             }
@@ -165,11 +231,20 @@ public final class JMupenUtils {
 
     }
 
+    public static void resetSaveFolder() {
+        JMupenUtils.setSaveFolder(new File(JMupenUtils.getJmupenHome().concat(JMupenUtils.getBar()).concat("save")));
+        props.setProperty("SaveFolder", JMupenUtils.getJmupenHome().concat(JMupenUtils.getBar()).concat("save"));
+        saveParamChanges();
+    }
+
     public static void saveParamChanges() {
         try {
             props.setProperty("Fullscreen", "" + JMupenUtils.getFullscreen());
             props.setProperty("UsingLegacy", "" + JMupenUtils.getUsingLegacyVersion());
             OutputStream out = new FileOutputStream(JMupenUtils.getConf());
+            if (JMupenUtils.getSaveFolder() != null) {
+                props.setProperty("SaveFolder", JMupenUtils.getSaveFolder().getAbsolutePath());
+            }
             props.store(out, "JMupen Configuration File");
         } catch (Exception e) {
             JMupenGUI.getInstance().showError("Error saving conf file.", e.getLocalizedMessage());
@@ -183,6 +258,10 @@ public final class JMupenUtils {
 
     public static void setFullscreen(boolean ans) {
         fullscreen = ans;
+    }
+
+    static void setSaveFolder(File file) {
+        saveFolder = file;
     }
 
     public static void setUsingLegacyVersion(boolean ans) {
