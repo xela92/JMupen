@@ -102,67 +102,6 @@ public final class JMupenUtils {
         return (path.delete());
     }
 
-    public static ArrayList<String> getGamesFromFile(Path recents) {
-        if (!Files.exists(recents)) {
-            try {
-                Files.createFile(recents);
-            } catch (IOException ex) {
-                gui.showError("Error creating recents file. You won't see recent games list.", ex.getLocalizedMessage());
-            }
-        }
-        Stream<String> stream = null;
-        try {
-            stream = Files.lines(recents, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            gui.showError("Error opening file. Maybe it does not exist or you cannot access it.", e.getLocalizedMessage());
-        }
-        if (stream != null) {
-            return new ArrayList(Arrays.asList(stream.toArray()));
-        } else {
-            return null;
-        }
-    }
-
-    public static String getJmupenHome() {
-        if (JMupenUtils.getOs().equalsIgnoreCase("win")) {
-            return System.getenv("APPDATA").concat(JMupenUtils.getBar().concat("Mupen64Plus"));
-        } else {
-            return JMupenUtils.getHome().concat(JMupenUtils.getBar()).concat(".local").concat(JMupenUtils.getBar()).concat("share")
-                    .concat(JMupenUtils.getBar()).concat("mupen64plus");
-        }
-    }
-
-    public static String getJmupenConfigDir() {
-        if (JMupenUtils.getOs().equalsIgnoreCase("win")) {
-            return System.getenv("APPDATA").concat(JMupenUtils.getBar().concat("Mupen64Plus"));
-        } else {
-            return JMupenUtils.getHome().concat(JMupenUtils.getBar()).concat(".config").concat(JMupenUtils.getBar()).concat("mupen64plus");
-        }
-    }
-
-    public static String getJmupenSaveDir() {
-        String dir = JMupenUtils.getJmupenHome().concat(JMupenUtils.getBar()).concat("save");
-        Path f = Paths.get(dir);
-        if (!Files.exists(f)) {
-            try {
-                Files.createDirectories(f);
-            } catch (IOException ex) {
-                JMupenGUI.getInstance().showError("FATAL", "Can't create default save directory. JMupen won't work without a savefiles directory. I will temporary use home folder.");
-                return JMupenUtils.getHome();
-            }
-        }
-        return dir;    
-        
-    }
-
-    public static Path getRecents() {
-        return recentsFile;
-    }
-
-    public static boolean getUsingLegacyVersion() {
-        return using_legacy;
-    }
-
     public static String getBar() {
         switch (System.getProperty("os.name")) {
             case "win":
@@ -194,8 +133,61 @@ public final class JMupenUtils {
         return games;
     }
 
+    public static ArrayList<String> getGamesFromFile(Path recents) {
+        if (!Files.exists(recents)) {
+            try {
+                Files.createFile(recents);
+            } catch (IOException ex) {
+                gui.showError("Error creating recents file. You won't see recent games list.", ex.getLocalizedMessage());
+            }
+        }
+        Stream<String> stream = null;
+        try {
+            stream = Files.lines(recents, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            gui.showError("Error opening file. Maybe it does not exist or you cannot access it.", e.getLocalizedMessage());
+        }
+        if (stream != null) {
+            return new ArrayList(Arrays.asList(stream.toArray()));
+        } else {
+            return null;
+        }
+    }
+
     public static String getHome() {
         return System.getProperty("user.home");
+
+    }
+
+    public static String getJmupenHome() {
+        if (JMupenUtils.getOs().equalsIgnoreCase("win")) {
+            return System.getenv("APPDATA").concat(JMupenUtils.getBar().concat("Mupen64Plus"));
+        } else {
+            return JMupenUtils.getHome().concat(JMupenUtils.getBar()).concat(".local").concat(JMupenUtils.getBar()).concat("share")
+                    .concat(JMupenUtils.getBar()).concat("mupen64plus");
+        }
+    }
+
+    public static String getJmupenConfigDir() {
+        if (JMupenUtils.getOs().equalsIgnoreCase("win")) {
+            return System.getenv("APPDATA").concat(JMupenUtils.getBar().concat("Mupen64Plus"));
+        } else {
+            return JMupenUtils.getHome().concat(JMupenUtils.getBar()).concat(".config").concat(JMupenUtils.getBar()).concat("mupen64plus");
+        }
+    }
+
+    public static String getJmupenSaveDir() {
+        String dir = JMupenUtils.getJmupenHome().concat(JMupenUtils.getBar()).concat("save");
+        Path f = Paths.get(dir);
+        if (!Files.exists(f)) {
+            try {
+                Files.createDirectories(f);
+            } catch (IOException ex) {
+                JMupenGUI.getInstance().showError("FATAL", "Can't create default save directory. JMupen won't work without a savefiles directory. I will temporary use home folder.");
+                return JMupenUtils.getHome();
+            }
+        }
+        return dir;
 
     }
 
@@ -211,6 +203,10 @@ public final class JMupenUtils {
         }
     }
 
+    public static Path getRecents() {
+        return recentsFile;
+    }
+
     public static File getSaveFolder() {
         if (!saveFolder.canRead() && !saveFolder.canWrite()) {
             JMupenGUI.getInstance().showError("Can't read savefiles directory.", "Rolling back to default savefiles directory.");
@@ -218,6 +214,10 @@ public final class JMupenUtils {
             JMupenUtils.saveParamChanges();
         }
         return saveFolder;
+    }
+
+    public static boolean getUsingLegacyVersion() {
+        return using_legacy;
     }
 
     public static void loadParams() {

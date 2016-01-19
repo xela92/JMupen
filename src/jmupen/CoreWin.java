@@ -30,7 +30,7 @@ public class CoreWin implements Runnable {
     private String fullscreen = JMupenUtils.getFullscreen() == true ? "--fullscreen" : "--windowed";
     private File f;
     private String bin = "bin";
-    private Path tmpFolder = Paths.get(System.getProperty("java.io.tmpdir") + "\\jmupen");
+    private final Path tmpFolder = Paths.get(System.getProperty("java.io.tmpdir") + "\\jmupen");
     private String corepath;
     private String saveFileDir = "";
     private String saveIntFileDir = "";
