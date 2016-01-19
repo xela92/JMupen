@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 /**
@@ -24,12 +26,12 @@ import java.util.stream.Stream;
 public final class JMupenUtils {
 
     private static final JMupenGUI gui = JMupenGUI.getInstance();
-    private static Properties props = new Properties();
+    private static final Properties props = new Properties();
     private static ArrayList<String> games = new ArrayList<String>();
     private static final Path recentsFile = Paths.get(JMupenUtils.getConfigDir() + JMupenUtils.getBar() + "jmupen.recents");
     private static boolean fullscreen = true;
     private static boolean using_legacy = false;
-    private static File saveFolder;
+    private static File saveFolder = new File(JMupenUtils.getJmupenSaveDir());
 
     public static void addGame(File game) {
         JMupenUtils.clearOldRecents();
@@ -139,7 +141,18 @@ public final class JMupenUtils {
     }
 
     public static String getJmupenSaveDir() {
-        return JMupenUtils.getJmupenHome().concat(JMupenUtils.getBar()).concat("save");
+        String dir = JMupenUtils.getJmupenHome().concat(JMupenUtils.getBar()).concat("save");
+        Path f = Paths.get(dir);
+        if (!Files.exists(f)) {
+            try {
+                Files.createDirectories(f);
+            } catch (IOException ex) {
+                JMupenGUI.getInstance().showError("FATAL", "Can't create default save directory. JMupen won't work without a savefiles directory. I will temporary use home folder.");
+                return JMupenUtils.getHome();
+            }
+        }
+        return dir;    
+        
     }
 
     public static Path getRecents() {
