@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import org.apache.commons.io.FileUtils;
 
@@ -26,6 +27,7 @@ public class JMupenUpdater {
     private static boolean update_available = false;
     private static File jarFile = null;
     private static File updatePackage = null;
+    private static final int tenmin = 600000;
 
     public static void checkForUpdates() {
         try {
@@ -40,7 +42,13 @@ public class JMupenUpdater {
                 URL url = new URL(JarURL);
                 URLConnection connection = url.openConnection();
                 long localMod = jarFile.lastModified(), onlineMod = connection.getLastModified();
-                if (localMod >= onlineMod) {
+                updatePackage = new File(JMupenUtils.getConfigDir().concat(JMupenUtils.getBar()).concat("jmupen-update.jar"));
+                if (updatePackage.exists()) {
+                    JMupenUpdater.setUpdateAvailable(true);
+                    JMupenGUI.getInstance().showUpdateDialog();
+                    return;
+                }
+                if (localMod >= onlineMod - tenmin) {
                     System.out.println("No update available at " + JarURL + '(' + localMod + '>' + onlineMod + ')');
                     JMupenUpdater.setUpdateAvailable(false);
                     return;
@@ -51,7 +59,6 @@ public class JMupenUpdater {
                 System.out.println("Loading update from " + JarURL);
                 byte bytes[] = getBytes(connection);
                 System.out.println("Update loaded");
-                updatePackage = new File(JMupenUtils.getConfigDir().concat(JMupenUtils.getBar()).concat("jmupen-update.jar"));
                 writeBytes(updatePackage, bytes);
                 System.out.println("Update saved: " + updatePackage.getAbsolutePath());
 
@@ -59,7 +66,7 @@ public class JMupenUpdater {
                 JMupenGUI.getInstance().showUpdateDialog();
             }
         } catch (Exception e) {
-            System.err.println("Error updating JMupen. "+e.getLocalizedMessage());
+            System.err.println("Error updating JMupen. " + e.getLocalizedMessage());
         }
     }
 
@@ -119,6 +126,10 @@ public class JMupenUpdater {
             currentJar = getJarFile();
         } catch (URISyntaxException ex) {
             System.err.println("Errore - url del jar malformato " + ex.getLocalizedMessage());
+        }
+
+        if (currentJar == null) {
+            return;
         }
 
         /* is it a jar file? */
