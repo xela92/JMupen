@@ -7,13 +7,14 @@ package jmupen;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import org.apache.commons.io.FileUtils;
 
@@ -110,6 +111,13 @@ public class JMupenUpdater {
     }
 
     public static void installUpdate() {
+        /*  try {
+         String digest = MD5ForFile.getDigest(new FileInputStream(updatePackage), 2048);
+         } catch (FileNotFoundException e) {
+         System.err.println("File not found. Nothing to install.");
+         return;
+         }
+         */
         jarFile.delete();
         try {
             FileUtils.moveFile(updatePackage, jarFile);
