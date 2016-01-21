@@ -128,7 +128,12 @@ public class JMupenUpdater {
     }
 
     public static void restartApplication() {
-        final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+        final String javaBin;
+        if (JMupenUtils.getOs().equalsIgnoreCase("win")) {
+            javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java.exe";
+        } else {
+            javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+        }
         File currentJar = null;
         try {
             currentJar = getJarFile();
