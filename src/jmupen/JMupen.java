@@ -16,7 +16,15 @@ public class JMupen {
      */
     public static void main(String[] args) {
         new JMupenGUI();
-        JMupenUpdater.checkForUpdates();
+        Thread t = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                JMupenUpdater.checkForUpdates();
+            }
+        });
+
+        t.start();
     }
 
 }
