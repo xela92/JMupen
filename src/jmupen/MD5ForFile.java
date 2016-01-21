@@ -5,16 +5,14 @@
  */
 package jmupen;
 
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -46,23 +44,27 @@ public class MD5ForFile {
         return result;
     }
 
-   /* public static String getMd5FromUrl(URLConnection connection) {
+    public static String getMd5FromUrl(URLConnection connection) {
         InputStream input = null;
-        try {
-            input = connection.getInputStream();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            byte[] buffer = new byte[4096];
-            int n = - 1;
-            while ((n = input.read(buffer)) != -1) {
-                .write(buffer, 0, n);
+        try {
+            int length = connection.getContentLength();
+            input = connection.getInputStream();
+            if (input != null) {
+                byte[] buffer = new byte[length];
+                int n = - 1;
+                while ((n = input.read(buffer)) != -1) {
+                    baos.write(buffer, 0, n);
+                }
+
+                input.close();
             }
-            output.close();
         } catch (IOException ex) {
             System.err.println("Server MD5 not available. " + ex.getLocalizedMessage());
             return "";
         }
-        return
+        return new String(baos.toByteArray(), Charset.defaultCharset());
     }
-    */
 
 }

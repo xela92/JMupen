@@ -25,6 +25,7 @@ import org.apache.commons.io.FileUtils;
 public class JMupenUpdater {
 
     private static final String JarURL = "http://xela92.linuxzogno.org/JMupen/JMupen.jar";
+    private static final String Md5URL = "http://xela92.linuxzogno.org/JMupen/JMupen.md5";
     private static boolean update_available = false;
     private static File jarFile = null;
     private static File updatePackage = null;
@@ -111,16 +112,24 @@ public class JMupenUpdater {
     }
 
     public static void installUpdate() {
-        /*  try {
+        try {
          String digest = MD5ForFile.getDigest(new FileInputStream(updatePackage), 2048);
+         if (!digest.equals(MD5ForFile.getMd5FromUrl(new URL(Md5URL).openConnection()))) {
+             System.err.println("Download failed, removing update file.");
+             JMupenGUI.getInstance().showError("Download failed - MD5 Check", "MD5 Check failed, not installing the update.");
+             updatePackage.delete();
+             return;
+         }
          } catch (FileNotFoundException e) {
          System.err.println("File not found. Nothing to install.");
          return;
+         } catch (Exception e) {
+          System.err.println("Almost impossible error (malformed MD5 url or IO problem). "+ e.getLocalizedMessage());
          }
-         */
         jarFile.delete();
         try {
             FileUtils.moveFile(updatePackage, jarFile);
+            JMupenUpdater.restartApplication();
         } catch (IOException ex) {
             System.err.println("Error moving file. You can find updated file at " + JMupenUtils.getConfigDir());
             JMupenGUI.getInstance().showError("Error updating JMupen.", "I couldn't move update file in place. You can find the app file in " + JMupenUtils.getConfigDir() + " folder.");
@@ -138,7 +147,7 @@ public class JMupenUpdater {
         try {
             currentJar = getJarFile();
         } catch (URISyntaxException ex) {
-            System.err.println("Errore - url del jar malformato " + ex.getLocalizedMessage());
+            System.err.println("Malformed JAR URL " + ex.getLocalizedMessage());
         }
 
         if (currentJar == null) {
@@ -160,7 +169,7 @@ public class JMupenUpdater {
         try {
             builder.start();
         } catch (IOException ex) {
-            System.err.println("Errore nell'esecuzione del riavvio " + ex.getLocalizedMessage());
+            System.err.println("Error restarting app. " + ex.getLocalizedMessage());
         }
         System.exit(0);
     }

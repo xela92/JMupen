@@ -168,7 +168,6 @@ public class JMupenGUI extends JFrame {
         int dialogResult = JOptionPane.showConfirmDialog(null, "JMupen update available. Wanna install? It's matter of seconds.", "Update Available", dialogButton);
         if (dialogResult == JOptionPane.YES_OPTION) {
             JMupenUpdater.installUpdate();
-            JMupenUpdater.restartApplication();
         }
 
     }
