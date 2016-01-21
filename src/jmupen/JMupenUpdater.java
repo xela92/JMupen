@@ -45,6 +45,7 @@ public class JMupenUpdater {
                 URLConnection connection = url.openConnection();
                 long localMod = jarFile.lastModified(), onlineMod = connection.getLastModified();
                 updatePackage = new File(JMupenUtils.getConfigDir().concat(JMupenUtils.getBar()).concat("jmupen-update.jar"));
+
                 if (updatePackage.exists()) {
                     JMupenUpdater.setUpdateAvailable(true);
                     JMupenGUI.getInstance().showUpdateDialog();
@@ -64,7 +65,7 @@ public class JMupenUpdater {
                 writeBytes(updatePackage, bytes);
                 System.out.println("Update saved: " + updatePackage.getAbsolutePath());
 
-                //jarFile.setLastModified(onlineMod);
+                jarFile.setLastModified(onlineMod);
                 JMupenGUI.getInstance().showUpdateDialog();
             }
         } catch (Exception e) {
@@ -113,19 +114,21 @@ public class JMupenUpdater {
 
     public static void installUpdate() {
         try {
-         String digest = MD5ForFile.getDigest(new FileInputStream(updatePackage), 2048);
-         if (!digest.equals(MD5ForFile.getMd5FromUrl(new URL(Md5URL).openConnection()))) {
-             System.err.println("Download failed, removing update file.");
-             JMupenGUI.getInstance().showError("Download failed - MD5 Check", "MD5 Check failed, not installing the update.");
-             updatePackage.delete();
-             return;
-         }
-         } catch (FileNotFoundException e) {
-         System.err.println("File not found. Nothing to install.");
-         return;
-         } catch (Exception e) {
-          System.err.println("Almost impossible error (malformed MD5 url or IO problem). "+ e.getLocalizedMessage());
-         }
+            String digest = MD5ForFile.getDigest(new FileInputStream(updatePackage), 2048);
+            System.out.println("DIGEST UPDATED PACK: " + digest);
+            System.out.println("DIGEST ONLINE: " + MD5ForFile.getMd5FromUrl(new URL(Md5URL).openConnection()));
+            if (!digest.trim().equals(MD5ForFile.getMd5FromUrl(new URL(Md5URL).openConnection()).trim())) {
+                System.err.println("Download failed, removing update file.");
+                JMupenGUI.getInstance().showError("Download failed - MD5 Check", "MD5 Check failed, not installing the update.");
+                updatePackage.delete();
+                return;
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found. Nothing to install.");
+            return;
+        } catch (Exception e) {
+            System.err.println("Almost impossible error (malformed MD5 url or IO problem). " + e.getLocalizedMessage());
+        }
         jarFile.delete();
         try {
             FileUtils.moveFile(updatePackage, jarFile);
