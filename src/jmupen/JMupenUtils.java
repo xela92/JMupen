@@ -1,5 +1,6 @@
 package jmupen;
 
+import fr.stevecohen.jarmanager.JarUnpacker;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -99,7 +100,16 @@ public final class JMupenUtils {
         }
         return (path.delete());
     }
+    public static void extractJar(File jarFile, File destDir) {
+        try {
+            System.out.println("Extracting JAR...");
+            JarUnpacker jarUnpacker = new JarUnpacker();
+            jarUnpacker.unpack(jarFile.getAbsolutePath(), destDir.getAbsolutePath());
 
+        } catch (Exception e) {
+            JMupenGUI.getInstance().showError("Error extracting jar", e.getLocalizedMessage());
+        }
+    }
     public static String getBar() {
         switch (System.getProperty("os.name")) {
             case "win":

@@ -12,10 +12,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -30,6 +34,7 @@ public class JMupenUpdater {
     private static File jarFile = null;
     private static File updatePackage = null;
     private static final int tenmin = 600000;
+    private static final File tmpDir = new File(System.getProperty("java.io.tmpdir") + "\\jmupen");
 
     public static void checkForUpdates() {
         try {
@@ -54,7 +59,7 @@ public class JMupenUpdater {
                 if (localMod >= onlineMod - tenmin) {
                     System.out.println("No update available at " + JarURL + '(' + localMod + '>' + onlineMod + ')');
                     JMupenUpdater.setUpdateAvailable(false);
-                    return;
+                    //return;
                 } else {
                     JMupenUpdater.setUpdateAvailable(true);
                 }
@@ -129,12 +134,20 @@ public class JMupenUpdater {
         } catch (Exception e) {
             System.err.println("Almost impossible error (malformed MD5 url or IO problem). " + e.getLocalizedMessage());
         }
-        jarFile.delete();
+        boolean deleted = jarFile.delete();
+        System.out.println("Deleted jar? " + deleted);
+
+        if (!deleted) {
+
+            JMupenUtils.extractJar(jarFile, tmpDir);
+            JMupenUpdater.startUpdaterApplication();
+
+        }
         try {
             FileUtils.moveFile(updatePackage, jarFile);
             JMupenUpdater.restartApplication();
         } catch (IOException ex) {
-            System.err.println("Error moving file. You can find updated file at " + JMupenUtils.getConfigDir());
+            System.err.println("Error moving file. You can find updated file at " + JMupenUtils.getConfigDir() + " Full mess: " + ex.getLocalizedMessage());
             JMupenGUI.getInstance().showError("Error updating JMupen.", "I couldn't move update file in place. You can find the app file in " + JMupenUtils.getConfigDir() + " folder.");
         }
     }
@@ -173,6 +186,48 @@ public class JMupenUpdater {
             builder.start();
         } catch (IOException ex) {
             System.err.println("Error restarting app. " + ex.getLocalizedMessage());
+        }
+        System.exit(0);
+    }
+
+    public static void startUpdaterApplication() {
+        final String javaBin;
+        if (JMupenUtils.getOs().equalsIgnoreCase("win")) {
+            javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java.exe";
+        } else {
+            javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+        }
+        File updaterJar = new File(tmpDir.getAbsolutePath() + File.separator + "bin" + File.separator + "win" + File.separator + "JMupenWinupdater.jar");
+
+        File currentJarPathTxt = new File(tmpDir.getAbsolutePath() + File.separator + "bin" + File.separator + "currentjar.txt");
+        try {
+            FileUtils.writeStringToFile(currentJarPathTxt, getJarFile().getAbsolutePath());
+        } catch (IOException e) {
+            System.err.println("Error writing jar filepath " + e.getLocalizedMessage());
+        } catch (URISyntaxException ex) {
+            System.err.println("Error writing jar filepath " + ex.getLocalizedMessage());
+
+        }
+        if (!updaterJar.exists()) {
+            return;
+        }
+
+        /* is it a jar file? */
+        if (!updaterJar.getName().endsWith(".jar")) {
+            return;
+        }
+
+        /* Build command: java -jar application.jar */
+        final ArrayList<String> command = new ArrayList<String>();
+        command.add(javaBin);
+        command.add("-jar");
+        command.add(updaterJar.getPath());
+
+        final ProcessBuilder builder = new ProcessBuilder(command);
+        try {
+            builder.start();
+        } catch (IOException ex) {
+            System.err.println("Error starting updater. " + ex.getLocalizedMessage());
         }
         System.exit(0);
     }
