@@ -12,14 +12,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -59,7 +55,7 @@ public class JMupenUpdater {
                 if (localMod >= onlineMod - tenmin) {
                     System.out.println("No update available at " + JarURL + '(' + localMod + '>' + onlineMod + ')');
                     JMupenUpdater.setUpdateAvailable(false);
-                    //return;
+                    return;
                 } else {
                     JMupenUpdater.setUpdateAvailable(true);
                 }
@@ -229,6 +225,7 @@ public class JMupenUpdater {
             System.err.println("Error starting updater. " + ex.getLocalizedMessage());
             JMupenGUI.getInstance().showError("Error starting updater", ex.getLocalizedMessage());
         }
+        System.gc();
         System.exit(0);
     }
 
