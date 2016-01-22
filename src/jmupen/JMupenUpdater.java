@@ -121,7 +121,10 @@ public class JMupenUpdater {
             if (!digest.trim().equals(MD5ForFile.getMd5FromUrl(new URL(Md5URL).openConnection()).trim())) {
                 System.err.println("Download failed, removing update file.");
                 JMupenGUI.getInstance().showError("Download failed - MD5 Check", "MD5 Check failed, not installing the update.");
-                updatePackage.delete();
+                boolean isDeleted = updatePackage.delete();
+                if (!isDeleted) {
+                    JMupenGUI.getInstance().showError("Can't delete temp file", "Please manually delete file at " + updatePackage.getAbsolutePath());
+                }
                 return;
             }
         } catch (FileNotFoundException e) {
