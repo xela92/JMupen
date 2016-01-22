@@ -140,7 +140,7 @@ public class JMupenUpdater {
         if (!deleted) {
 
             JMupenUtils.extractJar(jarFile, tmpDir);
-            JMupenUpdater.startUpdaterApplication();
+            JMupenUpdater.startWinUpdaterApplication();
 
         }
         try {
@@ -190,13 +190,9 @@ public class JMupenUpdater {
         System.exit(0);
     }
 
-    public static void startUpdaterApplication() {
+    public static void startWinUpdaterApplication() {
         final String javaBin;
-        if (JMupenUtils.getOs().equalsIgnoreCase("win")) {
-            javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java.exe";
-        } else {
-            javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
-        }
+        javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java.exe";
         File updaterJar = new File(tmpDir.getAbsolutePath() + File.separator + "bin" + File.separator + "win" + File.separator + "JMupenWinupdater.jar");
 
         File currentJarPathTxt = new File(tmpDir.getAbsolutePath() + File.separator + "bin" + File.separator + "currentjar.txt");
@@ -204,16 +200,19 @@ public class JMupenUpdater {
             FileUtils.writeStringToFile(currentJarPathTxt, getJarFile().getAbsolutePath());
         } catch (IOException e) {
             System.err.println("Error writing jar filepath " + e.getLocalizedMessage());
+            JMupenGUI.getInstance().showError("Error writing jar filepath to txt", e.getLocalizedMessage());
         } catch (URISyntaxException ex) {
             System.err.println("Error writing jar filepath " + ex.getLocalizedMessage());
 
         }
         if (!updaterJar.exists()) {
+            JMupenGUI.getInstance().showError("WinUpdater not found", "in folder: " + updaterJar.getAbsolutePath());
             return;
         }
 
         /* is it a jar file? */
         if (!updaterJar.getName().endsWith(".jar")) {
+            JMupenGUI.getInstance().showError("WinUpdater does not end with .jar????", updaterJar.getAbsolutePath());
             return;
         }
 
@@ -228,6 +227,7 @@ public class JMupenUpdater {
             builder.start();
         } catch (IOException ex) {
             System.err.println("Error starting updater. " + ex.getLocalizedMessage());
+            JMupenGUI.getInstance().showError("Error starting updater", ex.getLocalizedMessage());
         }
         System.exit(0);
     }
