@@ -1,0 +1,5 @@
+1.9.5
+
+- New option to select savefiles folder
+- New automatic updater
+- Fixes and code clean-up
