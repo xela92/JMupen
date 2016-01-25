@@ -36,6 +36,10 @@ public class MyListSelectionListener extends MouseAdapter {
         this.model = model;
     }
 
+    public String getGamePathToBeOpened() {
+        return gamePathToBeOpened;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         int index = list.locationToIndex(e.getPoint());
@@ -43,7 +47,7 @@ public class MyListSelectionListener extends MouseAdapter {
             if (list.getSelectedIndex() != -1) {
                 System.out.println("INDEX: " + index + " Total:" + JMupenUtils.getGames().size());
                 System.out.println("Games: " + JMupenUtils.getGames().get(index));
-                System.out.println("Recents file: "+JMupenUtils.getRecents().toString());
+                System.out.println("Recents file: " + JMupenUtils.getRecents().toString());
                 gamePathToBeOpened = JMupenUtils.getGames().get(index).split("\\|")[1];
                 File file = new File(gamePathToBeOpened);
                 System.out.println("os: " + System.getProperty("os.name"));
@@ -106,10 +110,6 @@ public class MyListSelectionListener extends MouseAdapter {
 
         FileUtils.writeStringToFile(text, builder.toString());
 
-    }
-
-    public String getGamePathToBeOpened() {
-        return gamePathToBeOpened;
     }
 
 }

@@ -38,6 +38,12 @@ public class JMupenOptions extends JFrame {
 
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+        instance = null;
+    }
+
     public static JMupenOptions getInstance() {
         if (instance == null) {
             instance = new JMupenOptions();
@@ -105,7 +111,7 @@ public class JMupenOptions extends JFrame {
                 dispose();
             }
         });
-        
+
         resetdir.addActionListener(new ActionListener() {
 
             @Override
@@ -120,9 +126,4 @@ public class JMupenOptions extends JFrame {
         this.setVisible(true);
     }
 
-    @Override
-    public void dispose() {
-        super.dispose();
-        instance = null;
-    }
 }
