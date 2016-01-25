@@ -12,5 +12,10 @@ If you don't mind sources, go to exe directory and grab JMupen.jar. To run it, j
 Linux Users:  if it's not working please resolve dependencies. You need to install sdl(1.2), libpng14, freetype, zlib, (lib)glu, libboost.
 If you use Archlinux, under src/bin_legacy/lin/lib/ (in jar file or in these sources) you can find a script named "jmupen_deps_arch.sh". If you run it in that folder, it'll solve dependencies for you (needs to be tested).
 
+# USAGE
+
+As it is Mupen, when you're in game commands are the same of Mupen64plus.
+See Wiki for additional details.
+
 
 
